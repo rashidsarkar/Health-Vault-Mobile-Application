@@ -14,91 +14,62 @@ const createUserIntoDB = async (userData: TUser) => {
   if (existingUser) {
     throw new AppError(StatusCodes.CONFLICT, 'Email is already in use');
   }
-  await User.create(userData);
-  const result = await User.findOne({ email: userData.email }).select(
-    '_id name email',
-  );
 
   const session = await mongoose.startSession();
   session.startTransaction();
+
   try {
+    // Create main user
     const [user] = await User.create([userData], { session });
-    let profile;
-    // create role-based profile
-    if (userData.role === 'NORMAlUSER') {
-      const normalUserPayload = {
-        ...userData,
-        userId: user._id,
-      };
-      const [normalUser] = await NormalUser.create([normalUserPayload], {
-        session,
-      });
-      profile = normalUser;
-      await User.findByIdAndUpdate(
-        user._id,
-        {
-          profileId: profile._id,
-        },
-        { session },
-      );
-    } else if (userData.role === 'DOCTOR') {
-      const doctorPayload = {
-        ...userData,
-        userId: user._id,
-      };
-      const [doctor] = await Doctor.create([doctorPayload], { session });
-      profile = doctor;
-      await User.findByIdAndUpdate(
-        user._id,
-        {
-          profileId: profile._id,
-        },
-        { session },
-      );
-    } else if (userData.role === 'CLINIC') {
-      const clinicPayload = {
-        ...userData,
-        userId: user._id,
-      };
-      const [clinic] = await Clinic.create([clinicPayload], { session });
-      profile = clinic;
-      await User.findByIdAndUpdate(
-        user._id,
-        {
-          profileId: profile._id,
-        },
-        { session },
-      );
-    } else if (userData.role === 'PHARMACY') {
-      const pharmacyPayload = {
-        ...userData,
-        userId: user._id,
-      };
-      const [pharmacy] = await Pharmacy.create([pharmacyPayload], { session });
-      profile = pharmacy;
-      await User.findByIdAndUpdate(
-        user._id,
-        {
-          profileId: profile._id,
-        },
-        { session },
-      );
+
+    let profileModel;
+
+    switch (userData.role) {
+      case 'NORMALUSER':
+        profileModel = NormalUser;
+        break;
+      case 'DOCTOR':
+        profileModel = Doctor;
+        break;
+      case 'CLINIC':
+        profileModel = Clinic;
+        break;
+      case 'PHARMACY':
+        profileModel = Pharmacy;
+        break;
+      default:
+        throw new Error('Invalid user role');
     }
+
+    // Create role-based profile
+    const payload = {
+      ...userData,
+      userId: user._id,
+    };
+
+    const [profile] = await profileModel.create([payload], { session });
+
+    // update user
+    await User.findByIdAndUpdate(
+      user._id,
+      { profileId: profile._id },
+      { session },
+    );
 
     await session.commitTransaction();
     session.endSession();
 
-    const result = await User.findOne({ email: userData.email }).select(
-      '_id name email role profileId ',
+    // return final user
+    const result = await User.findById(user._id).select(
+      '_id name email role profileId',
     );
+
     return result;
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
     throw error;
   }
-
-  return result;
 };
 
 const getUserFromDb = async () => {

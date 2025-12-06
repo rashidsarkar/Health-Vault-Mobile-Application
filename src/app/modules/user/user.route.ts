@@ -13,6 +13,6 @@ router.post(
 );
 
 //TODO -  removed this code after test
-router.get('/getAllUser', auth(USER_ROLE.user), UserControllers.getUsers);
+router.get('/getAllUser', auth(USER_ROLE.ADMIN), UserControllers.getUsers);
 export const UserRoutes = router;
 // todo
