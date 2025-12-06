@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import NormalUser from '../normalUser/normalUser.model';
 import Doctor from '../doctor/doctor.model';
 import Clinic from '../clinic/clinic.model';
+import Pharmacy from '../pharmacy/pharmacy.model';
 
 const createUserIntoDB = async (userData: TUser) => {
   const existingUser = await User.isUserExists(userData.email);
@@ -68,8 +69,34 @@ const createUserIntoDB = async (userData: TUser) => {
         },
         { session },
       );
+    } else if (userData.role === 'PHARMACY') {
+      const pharmacyPayload = {
+        ...userData,
+        userId: user._id,
+      };
+      const [pharmacy] = await Pharmacy.create([pharmacyPayload], { session });
+      profile = pharmacy;
+      await User.findByIdAndUpdate(
+        user._id,
+        {
+          profileId: profile._id,
+        },
+        { session },
+      );
     }
-  } catch (error) {}
+
+    await session.commitTransaction();
+    session.endSession();
+
+    const result = await User.findOne({ email: userData.email }).select(
+      '_id name email role profileId ',
+    );
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 
   return result;
 };
