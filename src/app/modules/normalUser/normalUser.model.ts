@@ -1,16 +1,27 @@
-import { model, Schema } from "mongoose";
-import { INormalUser } from "./normalUser.interface";
+import { model, Schema } from 'mongoose';
+import { INormalUser } from './normalUser.interface';
 
-const normalUserSchema = new Schema<INormalUser>({
-    user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    name: { type: String, required: true },
-    phone: { type: String },
-    email: { type: String, required: true, unique: true },
+const normalUserSchema = new Schema<INormalUser>(
+  {
+    user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    profilePhoto: { type: String },
+    fullName: { type: String },
+    dateOfBirth: { type: Date },
+    gender: {
+      type: String,
+      enum: ['MALE', 'FEMALE'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+    },
+    membershipId: { type: String },
     address: { type: String },
-    profile_image: { type: String, default: "" },
-    totalAmount: { type: Number, default: 0 },
-    totalPoint: { type: Number, default: 0 }
-}, { timestamps: true });
+    emergencyContact: { type: String },
+    identificationNumber: { type: String },
+  },
+  { timestamps: true },
+);
 
-const NormalUser = model<INormalUser>("NormalUser", normalUserSchema);
+const NormalUser = model<INormalUser>('NormalUser', normalUserSchema);
 export default NormalUser;

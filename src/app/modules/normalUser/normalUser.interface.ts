@@ -1,13 +1,20 @@
-import { Types } from "mongoose";
+/* eslint-disable no-unused-vars */
+import { Types } from 'mongoose';
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+}
 
 export interface INormalUser {
-    user: Types.ObjectId;
-    name: string;
-    username?: string;
-    phone?: string;
-    email: string;
-    address?: string;
-    profile_image?: string;
-    totalAmount?: number;
-    totalPoint?: number;
+  user: Types.ObjectId;
+  profilePhoto: string;
+  fullName: string;
+  dateOfBirth: Date;
+  gender: Gender;
+  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  membershipId: string;
+  address: string;
+  emergencyContact: string;
+  identificationNumber: string;
 }

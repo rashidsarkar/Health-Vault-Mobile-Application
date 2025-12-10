@@ -26,9 +26,12 @@ const createUserIntoDB = async (userData: TUser) => {
 
   try {
     // Create main user
-    const [user] = await User.create([userData], { session });
+    const user = await User.create([userData], { session }).then(
+      (res) => res[0],
+    );
 
-    let profileModel;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let profileModel: any;
 
     switch (userData.role) {
       case USER_ROLE.NORMALUSER:
@@ -66,10 +69,13 @@ const createUserIntoDB = async (userData: TUser) => {
     // Create role-based profile
     const payload = {
       ...userData,
-      userId: user._id,
+      user: user._id,
     };
 
-    const [profile] = await profileModel.create([payload], { session });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [profile] = await (profileModel as any).create([payload], {
+      session,
+    });
 
     // update user
     await User.findByIdAndUpdate(

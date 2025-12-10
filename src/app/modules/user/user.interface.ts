@@ -5,6 +5,7 @@ export type TUserRole = keyof typeof USER_ROLE;
 export type TUser = {
   name: string;
   email: string;
+  phone: string;
   password: string;
   profileId?: string;
   role: TUserRole;
