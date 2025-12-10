@@ -7,6 +7,12 @@ import NormalUser from '../normalUser/normalUser.model';
 import Doctor from '../doctor/doctor.model';
 import Clinic from '../clinic/clinic.model';
 import Pharmacy from '../pharmacy/pharmacy.model';
+import { USER_ROLE } from './user.const';
+import DiagnosticCenter from '../diagnosticCenter/diagnosticCenter.model';
+import MedicalTourism from '../medicalTourism/medicalTourism.model';
+import PlasticSurgery from '../plasticSurgery/plasticSurgery.model';
+import InVitroFertilization from '../inVitroFertilization/inVitroFertilization.model';
+import Wellness from '../wellness/wellness.model';
 
 const createUserIntoDB = async (userData: TUser) => {
   const existingUser = await User.isUserExists(userData.email);
@@ -25,18 +31,34 @@ const createUserIntoDB = async (userData: TUser) => {
     let profileModel;
 
     switch (userData.role) {
-      case 'NORMALUSER':
+      case USER_ROLE.NORMALUSER:
         profileModel = NormalUser;
         break;
-      case 'DOCTOR':
+      case USER_ROLE.DOCTOR:
         profileModel = Doctor;
         break;
-      case 'CLINIC':
+      case USER_ROLE.CLINIC:
         profileModel = Clinic;
         break;
-      case 'PHARMACY':
+      case USER_ROLE.PHARMACY:
         profileModel = Pharmacy;
         break;
+      case USER_ROLE.DIAGNOSTIC_CENTER:
+        profileModel = DiagnosticCenter;
+        break;
+      case USER_ROLE.MEDICAL_TOURISM:
+        profileModel = MedicalTourism;
+        break;
+      case USER_ROLE.PLASTIC_SURGERY:
+        profileModel = PlasticSurgery;
+        break;
+      case USER_ROLE.IN_VITRO_FERTILIZATION:
+        profileModel = InVitroFertilization;
+        break;
+      case USER_ROLE.WELLNESS:
+        profileModel = Wellness;
+        break;
+
       default:
         throw new Error('Invalid user role');
     }
