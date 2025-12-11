@@ -68,26 +68,31 @@ const forgotPassword = catchAsync(async (req, res) => {
   });
 });
 
-
-const verifyOTP= catchAsync(async(req,res)=>{
-  const {email,otp}=req.body;
-  const result = await AuthServices.verifyOTP(email,otp);
-  sendResponse(res,{
-    statusCode:StatusCodes.OK,
-    success:true,
-    message:"OTP verification Successfull",
-    data:result
-  })
-})
-
+const verifyOTP = catchAsync(async (req, res) => {
+  const { email, otp } = req.body;
+  const result = await AuthServices.verifyOTP(email, otp);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'OTP verification Successfull',
+    data: result,
+  });
+});
+const verifyEmailOTP = catchAsync(async (req, res) => {
+  const { email, otp } = req.body;
+  const result = await AuthServices.verifyEmailOTP(email, otp);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'OTP verification Successfull',
+    data: result,
+  });
+});
 
 const resetPassword = catchAsync(async (req, res) => {
   const { email, newPassword } = req.body;
-  const result = await AuthServices.resetPassword(
-    email,
-    newPassword, 
-  );
-    const { refreshToken, accessToken } = result;
+  const result = await AuthServices.resetPassword(email, newPassword);
+  const { refreshToken, accessToken } = result;
   res.cookie('refreshToken', refreshToken, {
     secure: true,
     httpOnly: true,
@@ -107,5 +112,6 @@ export const AuthControllers = {
   changePassword,
   forgotPassword,
   resetPassword,
-  verifyOTP
+  verifyOTP,
+  verifyEmailOTP,
 };

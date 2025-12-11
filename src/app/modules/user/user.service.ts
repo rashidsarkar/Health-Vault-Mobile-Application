@@ -15,23 +15,77 @@ import InVitroFertilization from '../inVitroFertilization/inVitroFertilization.m
 import Wellness from '../wellness/wellness.model';
 import { z } from 'zod';
 import { createNormalUserData } from '../normalUser/normalUser.validation';
+import { emailSender } from '../../utils/emailSender';
+
+const generateVerifyCode = (): number => {
+  return Math.floor(100000 + Math.random() * 900000);
+};
 
 const createUserIntoDB = async (userData: TUser) => {
-  console.log(userData);
-  const existingUser = await User.isUserExists(userData.email);
+  const existingUser = await User.findOne({ email: userData.email });
 
-  if (existingUser) {
+  if (existingUser?.isVerifyEmailOTPVerified === true) {
     throw new AppError(StatusCodes.CONFLICT, 'Email is already in use');
   }
+  // Case 2: User exists but not verified - resend OTP
+  if (existingUser && existingUser.isVerifyEmailOTPVerified === false) {
+    const otp = generateVerifyCode().toString();
+    const verifyEmailOTPExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+    // Update OTP and expiry
+    const updatedUser = await User.findOneAndUpdate(
+      { email: userData.email },
+      {
+        verifyEmailOTP: otp,
+        verifyEmailOTPExpire,
+      },
+      { new: true, runValidators: true },
+    );
+
+    // Send verification email (not password reset email)
+    await emailSender(
+      userData.email,
+      `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: #333;">Email Verification OTP</h2>
+        <p>Thank you for registering. Please use the following OTP to verify your email address:</p>
+        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;">
+          <h1 style="color: #2c3e50; margin: 0;">${otp}</h1>
+        </div>
+        <p><strong>This OTP is valid for 10 minutes only.</strong></p>
+        <p>If you did not request this, please ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply.</p>
+      </div>
+      `,
+    );
+
+    // Return user details so they can proceed to verify
+    return {
+      message: 'New OTP sent to your email. Please verify to continue.',
+      user: {
+        _id: updatedUser?._id,
+        email: updatedUser?.email,
+        isVerifyEmailOTPVerified: updatedUser?.isVerifyEmailOTPVerified,
+      },
+      resendOTP: true,
+    };
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     // Create main user
-    const user = await User.create([userData], { session }).then(
-      (res) => res[0],
-    );
+    const otp = generateVerifyCode().toString();
+    const verifyEmailOTPExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const userPayload = {
+      ...userData,
+      verifyEmailOTP: otp,
+      verifyEmailOTPExpire,
+    };
+    const user = await User.create([userPayload], {
+      session,
+    }).then((res) => res[0]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let profileModel: any;
@@ -93,7 +147,15 @@ const createUserIntoDB = async (userData: TUser) => {
 
     // return final user
     const result = await User.findById(user._id).select(
-      '_id name email role profileId',
+      '_id name email role profileId isBlocked isVerifyEmailOTPVerified',
+    );
+    await emailSender(
+      userData.email,
+      `
+    <h2>Your password reset OTP</h2>
+    <h1>${otp}</h1>
+    <p>This OTP is valid for 10 minutes only.</p>
+    `,
     );
 
     return result;

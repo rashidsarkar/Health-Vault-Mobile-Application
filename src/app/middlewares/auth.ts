@@ -41,6 +41,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (isBlocked) {
       throw new AppError(StatusCodes.FORBIDDEN, 'User is Blocked');
     }
+    const isVerifyEmailOTPVerified = existingUser.isVerifyEmailOTPVerified;
+    if (isVerifyEmailOTPVerified) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'User is not verified');
+    }
     // console.log(requiredRoles);
 
     if (existingUser.passwordChangedAt) {

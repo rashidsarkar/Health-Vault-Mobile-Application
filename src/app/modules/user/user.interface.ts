@@ -12,8 +12,11 @@ export type TUser = {
   isBlocked: boolean;
   passwordChangedAt?: Date;
   resetOTP?: string;
+  verifyEmailOTP?: string;
   resetOTPExpire?: Date;
+  verifyEmailOTPExpire?: Date;
   isResetOTPVerified?: boolean;
+  isVerifyEmailOTPVerified?: boolean;
 };
 export type TLoginUser = {
   email: string;

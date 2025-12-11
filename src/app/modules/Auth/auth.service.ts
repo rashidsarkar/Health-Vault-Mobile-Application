@@ -18,6 +18,10 @@ const loginUser = async (userData: TLoginUser) => {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
 
+  if (existingUser.isVerifyEmailOTPVerified === false) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User is not verified');
+  }
+
   const isMatchPass = await User.isPasswordMatch(
     userData.password,
     existingUser.password,
@@ -199,6 +203,29 @@ const verifyOTP = async (email: string, otp: string) => {
 
   return { message: 'OTP verified successfully' };
 };
+const verifyEmailOTP = async (email: string, otp: string) => {
+  const userData = await User.findOne({ email: email });
+  console.log(typeof otp + ' ' + typeof userData?.verifyEmailOTP);
+  if (!userData || !userData.verifyEmailOTP || !userData.verifyEmailOTPExpire) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid OTP request');
+  }
+  if (userData.verifyEmailOTP !== otp) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'Incorrect OTP');
+  }
+  if (userData.verifyEmailOTPExpire < new Date()) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'OTP expired');
+  }
+
+  await User.findOneAndUpdate(
+    { email },
+    {
+      isVerifyEmailOTPVerified: true,
+    },
+  );
+
+  return { message: 'Email OTP verified successfully' };
+};
+
 const resetPassword = async (email: string, password: string) => {
   console.log(password, email);
   const userData = await User.findOne({ email: email });
@@ -253,4 +280,5 @@ export const AuthServices = {
   forgotPassword,
   resetPassword,
   verifyOTP,
+  verifyEmailOTP,
 };
