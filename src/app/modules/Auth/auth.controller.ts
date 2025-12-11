@@ -32,7 +32,7 @@ const refreshToken = catchAsync(async (req, res) => {
 const getMe = catchAsync(async (req, res) => {
   const result = await AuthServices.getMe(
     req.query.email as string,
-    req.tokenUser?.email as string,
+    req.user?.email as string,
   );
 
   sendResponse(res, {
@@ -45,7 +45,7 @@ const getMe = catchAsync(async (req, res) => {
 
 const changePassword = catchAsync(async (req, res) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.tokenUser;
+  const user: any = req.user;
   const payload = req.body;
   const result = await AuthServices.changePassword(user, payload);
   sendResponse(res, {
@@ -74,7 +74,7 @@ const verifyOTP = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'OTP verification Successfull',
+    message: 'OTP verification Successful',
     data: result,
   });
 });

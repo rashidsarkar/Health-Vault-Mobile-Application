@@ -1,13 +1,15 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export interface IDoctor {
-    user: Types.ObjectId;
-    name: string;
-    username?: string;
-    phone?: string;
-    email: string;
-    address?: string;
-    profile_image?: string;
-    totalAmount?: number;
-    totalPoint?: number;
+  user: Types.ObjectId;
+  profile_image: string;
+  fullName: string;
+  specialization: string;
+  identificationNumber: string;
+  medicalLicenseNumber: string;
+  servicesOffered: string[]; // enum can be applied in Zod or model
+  yearsOfExperience: number;
+  languages: string[];
+  location: string;
+  institution: string;
 }
