@@ -205,7 +205,6 @@ const verifyOTP = async (email: string, otp: string) => {
 };
 const verifyEmailOTP = async (email: string, otp: string) => {
   const userData = await User.findOne({ email: email });
-  console.log(typeof otp + ' ' + typeof userData?.verifyEmailOTP);
   if (!userData || !userData.verifyEmailOTP || !userData.verifyEmailOTPExpire) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid OTP request');
   }
