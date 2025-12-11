@@ -13,7 +13,6 @@ import MedicalTourism from '../medicalTourism/medicalTourism.model';
 import PlasticSurgery from '../plasticSurgery/plasticSurgery.model';
 import InVitroFertilization from '../inVitroFertilization/inVitroFertilization.model';
 import Wellness from '../wellness/wellness.model';
-import { z } from 'zod';
 import { createNormalUserData } from '../normalUser/normalUser.validation';
 import { emailSender } from '../../utils/emailSender';
 import { createDoctorSchema } from '../doctor/doctor.validation';
