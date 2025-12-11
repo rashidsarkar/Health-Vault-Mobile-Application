@@ -4,7 +4,7 @@ import { INormalUser } from './normalUser.interface';
 const normalUserSchema = new Schema<INormalUser>(
   {
     user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    profilePhoto: { type: String },
+    profile_image: { type: String },
     fullName: { type: String },
     dateOfBirth: { type: Date },
     gender: {

@@ -14,12 +14,13 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/api/v1/', router);
-
+app.use('/uploads', express.static('uploads'));
 //Not Found
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World! From health vault server with rongila');
 });
+
 app.use(globalErrorHandler);
 
 app.use(notFound);

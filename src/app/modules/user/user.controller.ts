@@ -17,7 +17,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.CREATED,
     success: true,
     message: 'User registered successfully',
-    data: req.body,
+    data: result,
   });
 });
 

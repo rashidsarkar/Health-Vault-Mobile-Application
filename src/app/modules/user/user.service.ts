@@ -13,8 +13,11 @@ import MedicalTourism from '../medicalTourism/medicalTourism.model';
 import PlasticSurgery from '../plasticSurgery/plasticSurgery.model';
 import InVitroFertilization from '../inVitroFertilization/inVitroFertilization.model';
 import Wellness from '../wellness/wellness.model';
+import { z } from 'zod';
+import { createNormalUserData } from '../normalUser/normalUser.validation';
 
 const createUserIntoDB = async (userData: TUser) => {
+  console.log(userData);
   const existingUser = await User.isUserExists(userData.email);
 
   if (existingUser) {
@@ -36,6 +39,7 @@ const createUserIntoDB = async (userData: TUser) => {
     switch (userData.role) {
       case USER_ROLE.NORMALUSER:
         profileModel = NormalUser;
+        createNormalUserData.parse({ body: { ...userData } });
         break;
       case USER_ROLE.DOCTOR:
         profileModel = Doctor;

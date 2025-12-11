@@ -3,7 +3,7 @@ import { USER_ROLE } from './user.const';
 
 const registerUserValidationSchema = z.object({
   body: z.object({
-    name: z
+    fullName: z
       .string()
       .trim()
       .min(1, 'Name is required')
