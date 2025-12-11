@@ -62,7 +62,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       );
     }
 
-    req.tokenUser = decoded as JwtPayload;
+    req.user = decoded as JwtPayload;
     next();
   });
 };
