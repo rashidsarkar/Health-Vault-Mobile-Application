@@ -3,15 +3,20 @@ import { Model } from 'mongoose';
 import { USER_ROLE } from './user.const';
 export type TUserRole = keyof typeof USER_ROLE;
 export type TUser = {
-  name: string;
+  fullName: string;
   email: string;
+  phone: string;
   password: string;
+  profileId?: string;
   role: TUserRole;
   isBlocked: boolean;
   passwordChangedAt?: Date;
   resetOTP?: string;
+  verifyEmailOTP?: string;
   resetOTPExpire?: Date;
-  isResetOTPVerified?:boolean;
+  verifyEmailOTPExpire?: Date;
+  isResetOTPVerified?: boolean;
+  isVerifyEmailOTPVerified?: boolean;
 };
 export type TLoginUser = {
   email: string;
