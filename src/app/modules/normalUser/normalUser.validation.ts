@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const createNormalUserData = z.object({
   body: z.object({
     userId: z.string().optional(),
-    profilePhoto: z.string().optional(),
+    profile_image: z.string().optional(),
     fullName: z.string().min(1, 'Full name is required'),
     dateOfBirth: z.string().datetime({ message: 'Invalid date' }),
     gender: z.enum(['MALE', 'FEMALE']),

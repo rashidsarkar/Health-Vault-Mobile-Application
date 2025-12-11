@@ -16,6 +16,7 @@ import Wellness from '../wellness/wellness.model';
 import { z } from 'zod';
 import { createNormalUserData } from '../normalUser/normalUser.validation';
 import { emailSender } from '../../utils/emailSender';
+import { createDoctorSchema } from '../doctor/doctor.validation';
 
 const generateVerifyCode = (): number => {
   return Math.floor(100000 + Math.random() * 900000);
@@ -97,6 +98,7 @@ const createUserIntoDB = async (userData: TUser) => {
         break;
       case USER_ROLE.DOCTOR:
         profileModel = Doctor;
+        createDoctorSchema.parse({ body: { ...userData } });
         break;
       case USER_ROLE.CLINIC:
         profileModel = Clinic;

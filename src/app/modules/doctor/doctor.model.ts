@@ -1,16 +1,22 @@
-import { model, Schema } from "mongoose";
-import { IDoctor } from "./doctor.interface";
+import { model, Schema } from 'mongoose';
+import { IDoctor } from './doctor.interface';
 
-const doctorSchema = new Schema<IDoctor>({
-    user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    name: { type: String, required: true },
-    phone: { type: String },
-    email: { type: String, required: true, unique: true },
-    address: { type: String },
-    profile_image: { type: String, default: "" },
-    totalAmount: { type: Number, default: 0 },
-    totalPoint: { type: Number, default: 0 }
-}, { timestamps: true });
+const doctorSchema = new Schema<IDoctor>(
+  {
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    profile_image: { type: String },
+    fullName: { type: String },
+    specialization: { type: String, required: true },
+    identificationNumber: { type: String, required: true },
+    medicalLicenseNumber: { type: String, required: true },
+    servicesOffered: { type: [String], default: [] },
+    yearsOfExperience: { type: Number, required: true },
+    languages: { type: [String], default: [] },
+    location: { type: String, required: true },
+    institution: { type: String, required: true },
+  },
+  { timestamps: true },
+);
 
-const Doctor = model<IDoctor>("Doctor", doctorSchema);
+const Doctor = model<IDoctor>('Doctor', doctorSchema);
 export default Doctor;
