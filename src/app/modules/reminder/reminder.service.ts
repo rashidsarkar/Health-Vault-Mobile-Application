@@ -1,5 +1,3 @@
-import httpStatus from 'http-status';
-import AppError from '../../error/appError';
 import { IReminder } from './reminder.interface';
 import Reminder from './reminder.model';
 
