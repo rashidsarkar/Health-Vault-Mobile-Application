@@ -13,5 +13,16 @@ router.post(
   validateRequest(reminderValidations.createReminderSchema),
   reminderController.createReminder,
 );
+router.get(
+  '/my-reminders',
+  auth(USER_ROLE.NORMALUSER),
+  reminderController.getMyReminders,
+);
+router.patch(
+  'update-reminder/:id',
+  auth(USER_ROLE.NORMALUSER),
+  validateRequest(reminderValidations.updateReminderSchema),
+  reminderController.updateReminder,
+);
 
 export const reminderRoutes = router;
