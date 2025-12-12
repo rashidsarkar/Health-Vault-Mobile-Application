@@ -1,16 +1,15 @@
 import express from 'express';
 import auth from '../../middlewares/auth';
-import { USER_ROLE } from '../user/user.constant';
-import validateRequest from '../../middlewares/validateRequest';
 import reminderValidations from './reminder.validation';
 import reminderController from './reminder.controller';
-import { uploadFile } from '../../helper/fileUploader';
+import { USER_ROLE } from '../user/user.const';
+import validateRequest from '../../middlewares/validateRequest';
 
 const router = express.Router();
 
 router.post(
   '/create-reminder',
-  auth(USER_ROLE.NORMAL_USER),
+  auth(USER_ROLE.NORMALUSER),
   validateRequest(reminderValidations.createReminderSchema),
   reminderController.createReminder,
 );

@@ -6,7 +6,7 @@ import reminderServices from './reminder.service';
 const createReminder = catchAsync(async (req, res) => {
   const result = await reminderServices.createReminder(
     req.body,
-    req.user.profileID,
+    req.user.profileId,
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
