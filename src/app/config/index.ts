@@ -16,4 +16,6 @@ export default {
   jwt_reset_password_link: process.env.JWT_RESET_PASSWORD_LINK,
   email_for_mailer: process.env.EMAIL_FOR_MAILER,
   email_password: process.env.EMAIL_PASSWORD,
+  admin_email: process.env.admin_email,
+  admin_password: process.env.admin_password,
 };

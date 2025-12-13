@@ -7,7 +7,7 @@ export interface IDoctor {
   specialization: string;
   identificationNumber: string;
   medicalLicenseNumber: string;
-  servicesOffered: string[]; // enum can be enforced in zod/model later
+  service: Types.ObjectId[]; // enum can be enforced in zod/model later
   yearsOfExperience: number;
   languages: string[];
   location: string;
