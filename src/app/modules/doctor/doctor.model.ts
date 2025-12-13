@@ -14,6 +14,7 @@ const doctorSchema = new Schema<IDoctor>(
     languages: { type: [String], default: [] },
     location: { type: String, required: true },
     institution: { type: String, required: true },
+    about: { type: String, required: true },
   },
   { timestamps: true },
 );
