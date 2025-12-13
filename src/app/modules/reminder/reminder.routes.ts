@@ -19,7 +19,7 @@ router.get(
   reminderController.getMyReminders,
 );
 router.patch(
-  'update-reminder/:id',
+  '/update-reminder/:id',
   auth(USER_ROLE.NORMALUSER),
   validateRequest(reminderValidations.updateReminderSchema),
   reminderController.updateReminder,
