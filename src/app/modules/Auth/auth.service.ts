@@ -19,7 +19,10 @@ const loginUser = async (userData: TLoginUser) => {
   }
 
   if (existingUser.isVerifyEmailOTPVerified === false) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'User is not verified');
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      'User is not verified. please verify with OTP or again register',
+    );
   }
 
   const isMatchPass = await User.isPasswordMatch(

@@ -11,3 +11,4 @@ export const USER_ROLE = {
   IN_VITRO_FERTILIZATION: 'IN_VITRO_FERTILIZATION',
   WELLNESS: 'WELLNESS',
 } as const;
+export type ENUM_USER_ROLE = (typeof USER_ROLE)[keyof typeof USER_ROLE];

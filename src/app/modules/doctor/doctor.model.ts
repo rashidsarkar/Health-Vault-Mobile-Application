@@ -9,11 +9,12 @@ const doctorSchema = new Schema<IDoctor>(
     specialization: { type: String, required: true },
     identificationNumber: { type: String, required: true },
     medicalLicenseNumber: { type: String, required: true },
-    servicesOffered: { type: [String], default: [] },
+    service: { type: [Schema.Types.ObjectId], ref: 'Service', default: [] },
     yearsOfExperience: { type: Number, required: true },
     languages: { type: [String], default: [] },
     location: { type: String, required: true },
     institution: { type: String, required: true },
+    about: { type: String, required: true },
   },
   { timestamps: true },
 );
