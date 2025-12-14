@@ -3,9 +3,10 @@ import express, { NextFunction, Request, Response } from 'express';
 import { UserControllers } from './user.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { UserValidation } from './user.validation';
+
+import { uploadFile } from '../../utils/fileUploader';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from './user.const';
-import { uploadFile } from '../../utils/fileUploader';
 
 const router = express.Router();
 router.post(
@@ -19,6 +20,11 @@ router.post(
   },
   validateRequest(UserValidation.registerUserValidationSchema),
   UserControllers.createUser,
+);
+router.get(
+  '/getMe',
+  auth(USER_ROLE.NORMALUSER, USER_ROLE.ADMIN, USER_ROLE.PROVIDER),
+  UserControllers.getMe,
 );
 
 //TODO -  removed this code after test

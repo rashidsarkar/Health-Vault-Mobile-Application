@@ -12,7 +12,7 @@ router.post(
 );
 router.get(
   '/admin-service',
-  auth(...Object.values(USER_ROLE)),
+
   ServiceController.getAdminServices,
 );
 router.get(

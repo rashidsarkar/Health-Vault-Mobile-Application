@@ -33,8 +33,18 @@ const getUsers = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const result = await UserServices.getMeFromDb(req.user?.email as string);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User found',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
-
+  getMe,
   getUsers,
 };

@@ -4,18 +4,11 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import mongoose from 'mongoose';
 import NormalUser from '../normalUser/normalUser.model';
-import Doctor from '../doctor/doctor.model';
-import Clinic from '../clinic/clinic.model';
-import Pharmacy from '../pharmacy/pharmacy.model';
 import { USER_ROLE } from './user.const';
-import DiagnosticCenter from '../diagnosticCenter/diagnosticCenter.model';
-import MedicalTourism from '../medicalTourism/medicalTourism.model';
-import PlasticSurgery from '../plasticSurgery/plasticSurgery.model';
-import InVitroFertilization from '../inVitroFertilization/inVitroFertilization.model';
-import Wellness from '../wellness/wellness.model';
 import { createNormalUserData } from '../normalUser/normalUser.validation';
 import { emailSender } from '../../utils/emailSender';
-import { createDoctorSchema } from '../doctor/doctor.validation';
+import Provider from '../provider/provider.model';
+import { createProviderData } from '../provider/provider.validation';
 
 const generateVerifyCode = (): number => {
   return Math.floor(100000 + Math.random() * 900000);
@@ -95,31 +88,11 @@ const createUserIntoDB = async (userData: TUser) => {
         profileModel = NormalUser;
         createNormalUserData.parse({ body: { ...userData } });
         break;
-      // case USER_ROLE.DOCTOR:
-      //   profileModel = Doctor;
-      //   // createDoctorSchema.parse({ body: { ...userData } });
-      //   break;
-      // case USER_ROLE.CLINIC:
-      //   profileModel = Clinic;
-      //   break;
-      // case USER_ROLE.PHARMACY:
-      //   profileModel = Pharmacy;
-      //   break;
-      // case USER_ROLE.DIAGNOSTIC_CENTER:
-      //   profileModel = DiagnosticCenter;
-      //   break;
-      // case USER_ROLE.MEDICAL_TOURISM:
-      //   profileModel = MedicalTourism;
-      //   break;
-      // case USER_ROLE.PLASTIC_SURGERY:
-      //   profileModel = PlasticSurgery;
-      //   break;
-      // case USER_ROLE.IN_VITRO_FERTILIZATION:
-      //   profileModel = InVitroFertilization;
-      //   break;
-      // case USER_ROLE.WELLNESS:
-      //   profileModel = Wellness;
-      //   break;
+      case USER_ROLE.PROVIDER:
+        profileModel = Provider;
+        createProviderData.parse({ body: { ...userData } });
+
+        break;
 
       default:
         throw new Error('Invalid user role');
@@ -175,8 +148,65 @@ const getUserFromDb = async () => {
   return user;
 };
 
+const getMeFromDb = async (email: string) => {
+  const result = await User.aggregate([
+    // 1️⃣ Match user
+    {
+      $match: { email },
+    },
+
+    // 2️⃣ Convert profileId string → ObjectId
+    {
+      $addFields: {
+        profileObjectId: { $toObjectId: '$profileId' },
+      },
+    },
+
+    // 3️⃣ Lookup Normal User
+    {
+      $lookup: {
+        from: 'normalusers',
+        localField: 'profileObjectId',
+        foreignField: '_id',
+        as: 'normalUser',
+      },
+    },
+
+    // 4️⃣ Lookup Provider
+    {
+      $lookup: {
+        from: 'providers',
+        localField: 'profileObjectId',
+        foreignField: '_id',
+        as: 'provider',
+      },
+    },
+
+    // 5️⃣ Flatten arrays (keep full data)
+    {
+      $addFields: {
+        normalUser: { $arrayElemAt: ['$normalUser', 0] },
+        provider: { $arrayElemAt: ['$provider', 0] },
+      },
+    },
+
+    // 6️⃣ Remove sensitive fields if needed
+    {
+      $project: {
+        password: 0, // security best practice
+      },
+    },
+  ]);
+
+  if (!result.length) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+
+  return result[0];
+};
+
 export const UserServices = {
   createUserIntoDB,
-
+  getMeFromDb,
   getUserFromDb,
 };
