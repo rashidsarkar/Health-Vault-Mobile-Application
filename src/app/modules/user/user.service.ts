@@ -155,24 +155,14 @@ const getMeFromDb = async (email: string) => {
       $match: { email },
     },
 
-    // 2️⃣ Convert profileId string → ObjectId
+    // 2️⃣ Convert profileId → ObjectId
     {
       $addFields: {
         profileObjectId: { $toObjectId: '$profileId' },
       },
     },
 
-    // 3️⃣ Lookup Normal User
-    {
-      $lookup: {
-        from: 'normalusers',
-        localField: 'profileObjectId',
-        foreignField: '_id',
-        as: 'normalUser',
-      },
-    },
-
-    // 4️⃣ Lookup Provider
+    // 3️⃣ Lookup Provider
     {
       $lookup: {
         from: 'providers',
@@ -182,18 +172,68 @@ const getMeFromDb = async (email: string) => {
       },
     },
 
-    // 5️⃣ Flatten arrays (keep full data)
     {
       $addFields: {
-        normalUser: { $arrayElemAt: ['$normalUser', 0] },
         provider: { $arrayElemAt: ['$provider', 0] },
       },
     },
 
-    // 6️⃣ Remove sensitive fields if needed
+    // 4️⃣ Lookup ProviderType
+    {
+      $lookup: {
+        from: 'providertypes',
+        localField: 'provider.providerTypeId',
+        foreignField: '_id',
+        as: 'providerType',
+      },
+    },
+
+    {
+      $addFields: {
+        providerType: { $arrayElemAt: ['$providerType', 0] },
+      },
+    },
+
+    // 5️⃣ Lookup Services (UPDATED – serviceId array based)
+    {
+      $lookup: {
+        from: 'services',
+        let: { serviceIds: '$provider.serviceId' }, // serviceId array pass করা
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: [
+                  '$_id',
+                  {
+                    $map: {
+                      input: '$$serviceIds',
+                      as: 'id',
+                      in: { $toObjectId: '$$id' },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              title: 1,
+              price: 1,
+            },
+          },
+        ],
+        as: 'services',
+      },
+    },
+
+    // 6️⃣ Clean sensitive fields
     {
       $project: {
-        password: 0, // security best practice
+        password: 0,
+        verifyEmailOTP: 0,
+        verifyEmailOTPExpire: 0,
       },
     },
   ]);
@@ -204,7 +244,6 @@ const getMeFromDb = async (email: string) => {
 
   return result[0];
 };
-
 export const UserServices = {
   createUserIntoDB,
   getMeFromDb,
