@@ -95,31 +95,31 @@ const createUserIntoDB = async (userData: TUser) => {
         profileModel = NormalUser;
         createNormalUserData.parse({ body: { ...userData } });
         break;
-      case USER_ROLE.DOCTOR:
-        profileModel = Doctor;
-        // createDoctorSchema.parse({ body: { ...userData } });
-        break;
-      case USER_ROLE.CLINIC:
-        profileModel = Clinic;
-        break;
-      case USER_ROLE.PHARMACY:
-        profileModel = Pharmacy;
-        break;
-      case USER_ROLE.DIAGNOSTIC_CENTER:
-        profileModel = DiagnosticCenter;
-        break;
-      case USER_ROLE.MEDICAL_TOURISM:
-        profileModel = MedicalTourism;
-        break;
-      case USER_ROLE.PLASTIC_SURGERY:
-        profileModel = PlasticSurgery;
-        break;
-      case USER_ROLE.IN_VITRO_FERTILIZATION:
-        profileModel = InVitroFertilization;
-        break;
-      case USER_ROLE.WELLNESS:
-        profileModel = Wellness;
-        break;
+      // case USER_ROLE.DOCTOR:
+      //   profileModel = Doctor;
+      //   // createDoctorSchema.parse({ body: { ...userData } });
+      //   break;
+      // case USER_ROLE.CLINIC:
+      //   profileModel = Clinic;
+      //   break;
+      // case USER_ROLE.PHARMACY:
+      //   profileModel = Pharmacy;
+      //   break;
+      // case USER_ROLE.DIAGNOSTIC_CENTER:
+      //   profileModel = DiagnosticCenter;
+      //   break;
+      // case USER_ROLE.MEDICAL_TOURISM:
+      //   profileModel = MedicalTourism;
+      //   break;
+      // case USER_ROLE.PLASTIC_SURGERY:
+      //   profileModel = PlasticSurgery;
+      //   break;
+      // case USER_ROLE.IN_VITRO_FERTILIZATION:
+      //   profileModel = InVitroFertilization;
+      //   break;
+      // case USER_ROLE.WELLNESS:
+      //   profileModel = Wellness;
+      //   break;
 
       default:
         throw new Error('Invalid user role');
