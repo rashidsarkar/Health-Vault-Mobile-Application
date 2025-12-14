@@ -97,7 +97,7 @@ const createUserIntoDB = async (userData: TUser) => {
         break;
       case USER_ROLE.DOCTOR:
         profileModel = Doctor;
-        createDoctorSchema.parse({ body: { ...userData } });
+        // createDoctorSchema.parse({ body: { ...userData } });
         break;
       case USER_ROLE.CLINIC:
         profileModel = Clinic;

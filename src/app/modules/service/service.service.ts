@@ -54,5 +54,22 @@ const createService = async (
   return result;
 };
 
-const ServiceServices = { createService };
+const getAdminServices = async (providerType: string) => {
+  const services = await Service.find({
+    providerType: providerType,
+    providerId: null,
+  });
+  return services;
+};
+
+const getMyCreatedServices= async(profileId:string,providerType:string)=>{
+    const services = await Service.find({
+        providerType: providerType,
+        providerId: profileId,
+      });
+      return services;
+}
+
+
+const ServiceServices = { createService, getAdminServices,getMyCreatedServices };
 export default ServiceServices;

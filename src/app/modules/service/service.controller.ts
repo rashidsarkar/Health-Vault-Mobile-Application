@@ -17,5 +17,32 @@ const createService = catchAsync(async (req, res) => {
   });
 });
 
-const ServiceController = { createService };
+const getAdminServices = catchAsync(async (req, res) => {
+  const result = await ServiceServices.getAdminServices(req.user.role);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Admin services fetched successfully',
+    data: result,
+  });
+});
+
+const getMyCreatedServices = catchAsync(async (req, res) => {
+  const result = await ServiceServices.getMyCreatedServices(
+    req?.user?.profileId,
+    req.user.role,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'My created services fetched successfully',
+    data: result,
+  });
+});
+
+const ServiceController = {
+  createService,
+  getAdminServices,
+  getMyCreatedServices,
+};
 export default ServiceController;
