@@ -21,6 +21,7 @@ const providerSchema = new Schema<IProvider>(
     location: { type: String },
 
     identificationNumber: { type: String },
+    identification_images: { type: String, required: true },
 
     // Doctor-specific
     specialization: { type: String },

@@ -13,6 +13,7 @@ export interface IProvider {
   location?: string;
 
   identificationNumber?: string;
+  identification_images: string;
 
   // Doctor-specific
   specialization?: string;
