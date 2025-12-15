@@ -18,7 +18,6 @@ const createService = async (
     });
     return result;
   }
-
   const result = await Service.create({
     ...payload,
     providerId: providerId,

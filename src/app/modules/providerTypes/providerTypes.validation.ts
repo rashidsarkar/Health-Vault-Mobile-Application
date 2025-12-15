@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const createProviderType = z.object({
   body: z.object({
-    key: z.string(),
+    key: z.string().toUpperCase().trim(),
     label: z.string(),
   }),
 });

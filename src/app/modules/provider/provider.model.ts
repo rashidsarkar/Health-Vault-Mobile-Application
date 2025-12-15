@@ -5,7 +5,8 @@ const providerSchema = new Schema<IProvider>(
   {
     user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     profile_image: { type: String },
-    fullName: { type: String, required: true },
+    fullName: { type: String },
+    displayName: { type: String },
     providerTypeId: {
       type: Schema.Types.ObjectId,
       required: true,

@@ -5,6 +5,7 @@ export interface IProvider {
   providerTypeId: Types.ObjectId;
   serviceId: Types.ObjectId[];
   profile_image?: string;
+  displayName?: string;
 
   fullName: string;
   about?: string;
