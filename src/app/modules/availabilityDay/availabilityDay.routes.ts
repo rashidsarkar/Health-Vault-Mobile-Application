@@ -14,4 +14,16 @@ router.post(
   AvailabilityDayController.createAvailabilityDay,
 );
 
+router.get(
+  '/my-availability-days',
+  auth(USER_ROLE.PROVIDER),
+  AvailabilityDayController.getMyAvailabilityDays,
+);
+
+router.get(
+  '/provider-availability/:providerId',
+
+  AvailabilityDayController.getProviderAvailability,
+);
+
 export const availabilityDayRoutes = router;

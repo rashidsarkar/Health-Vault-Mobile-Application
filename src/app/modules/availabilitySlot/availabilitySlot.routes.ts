@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   '/create-availability-slot',
-  auth(USER_ROLE.ADMIN),
+  auth(USER_ROLE.PROVIDER),
   validateRequest(AvailabilitySlotValidations.createAvailabilitySlot),
   AvailabilitySlotController.createAvailabilitySlot,
 );

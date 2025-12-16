@@ -1,3 +1,4 @@
+import AvailabilitySlot from '../availabilitySlot/availabilitySlot.model';
 import { IAvailabilityDay } from './availabilityDay.interface';
 import AvailabilityDay from './availabilityDay.model';
 
@@ -20,6 +21,22 @@ const createAvailabilityDay = async (
   );
   return result;
 };
+const getMyAvailabilityDays = async (profileId: string) => {
+  const availabilityDays = await AvailabilityDay.find({
+    providerId: profileId,
+  }).populate('providerId');
+  return availabilityDays;
+};
 
-const AvailabilityDayServices = { createAvailabilityDay };
+const getProviderAvailability = async (providerId: string) => {
+  return await AvailabilitySlot.find({ providerId }).populate(
+    'availabilityDayId',
+  );
+};
+
+const AvailabilityDayServices = {
+  createAvailabilityDay,
+  getMyAvailabilityDays,
+  getProviderAvailability,
+};
 export default AvailabilityDayServices;
