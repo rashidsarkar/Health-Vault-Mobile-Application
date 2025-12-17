@@ -10,8 +10,8 @@ export const uploadFile = () => {
 
       if (file.fieldname === 'profile_image') {
         uploadPath = 'uploads/images/profile';
-      } else if (file.fieldname === 'thumbnail_image') {
-        uploadPath = 'uploads/images/thumbnail_image';
+      } else if (file.fieldname === 'identification_images') {
+        uploadPath = 'uploads/images/identification_images';
       } else if (file.fieldname === 'article_images') {
         uploadPath = 'uploads/images/article_images';
       } else if (file.fieldname === 'video') {
@@ -49,7 +49,7 @@ export const uploadFile = () => {
     const allowedFieldnames = [
       'image',
       'profile_image',
-      'thumbnail_image',
+      'identification_images',
       'article_images',
       'category_image',
       'video',
@@ -81,7 +81,7 @@ export const uploadFile = () => {
   }).fields([
     { name: 'image', maxCount: 1 },
     { name: 'profile_image', maxCount: 1 },
-    { name: 'thumbnail_image', maxCount: 1 },
+    { name: 'identification_images', maxCount: 1 },
     { name: 'article_images', maxCount: 5 },
     { name: 'category_image', maxCount: 1 },
     { name: 'video', maxCount: 1 },

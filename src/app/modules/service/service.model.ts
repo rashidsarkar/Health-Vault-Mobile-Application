@@ -1,20 +1,25 @@
 import { model, Schema } from 'mongoose';
 import { IService } from './service.interface';
-import { USER_ROLE } from '../user/user.const';
 
 const serviceSchema = new Schema<IService>(
   {
+    providerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Provider',
+    },
+    providerType: {
+      type: String,
+      required: true,
+    },
+    isAdminCreated: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     title: {
       type: String,
       required: true,
       trim: true,
-    },
-    providerId: {
-      type: String,
-    },
-    providerType: {
-      type: String,
-      enum: Object.values(USER_ROLE), // 🔥 dynamic enum
     },
     price: {
       type: Number,

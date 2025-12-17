@@ -10,6 +10,9 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   if (files && typeof files === 'object' && 'profile_image' in files) {
     req.body.profile_image = files['profile_image'][0].path;
   }
+  if (files && typeof files === 'object' && 'identification_images' in files) {
+    req.body.identification_images = files['identification_images'][0].path;
+  }
 
   const result = await UserServices.createUserIntoDB(req.body);
 
@@ -33,8 +36,18 @@ const getUsers = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const result = await UserServices.getMeFromDb(req.user?.email as string);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User found',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
-
+  getMe,
   getUsers,
 };
