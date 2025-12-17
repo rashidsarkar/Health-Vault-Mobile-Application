@@ -10,11 +10,7 @@ router.post(
   auth(...Object.values(USER_ROLE)),
   ServiceController.createService,
 );
-router.get(
-  '/admin-service',
-
-  ServiceController.getAdminServices,
-);
+router.get('/admin-service', ServiceController.getAdminServices);
 router.get(
   '/my-created-service',
   auth(...Object.values(USER_ROLE)),

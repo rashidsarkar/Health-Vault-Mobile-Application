@@ -7,6 +7,7 @@ import { serviceRoutes } from '../modules/service/service.routes';
 import { providerTypesRoutes } from '../modules/providerTypes/providerTypes.routes';
 import { availabilityDayRoutes } from '../modules/availabilityDay/availabilityDay.routes';
 import { availabilitySlotRoutes } from '../modules/availabilitySlot/availabilitySlot.routes';
+import { providerRoutes } from '../modules/provider/provider.routes';
 
 const router = Router();
 
@@ -38,6 +39,10 @@ const moduleRoutes = [
   {
     path: '/availability-slot',
     route: availabilitySlotRoutes,
+  },
+  {
+    path: '/provider',
+    route: providerRoutes,
   },
 ];
 
