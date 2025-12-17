@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import AvailabilitySlot from '../availabilitySlot/availabilitySlot.model';
 import { IAvailabilityDay } from './availabilityDay.interface';
 import AvailabilityDay from './availabilityDay.model';
@@ -29,9 +30,30 @@ const getMyAvailabilityDays = async (profileId: string) => {
 };
 
 const getProviderAvailability = async (providerId: string) => {
-  return await AvailabilitySlot.find({ providerId }).populate(
-    'availabilityDayId',
-  );
+  const result = await AvailabilityDay.aggregate([
+    {
+      $match: {
+        providerId: new mongoose.Types.ObjectId(providerId),
+      },
+    },
+    {
+      $lookup: {
+        from: 'providers',
+        localField: 'providerId',
+        foreignField: '_id',
+        as: 'providerDetails',
+      },
+    },
+    {
+      $lookup: {
+        from: 'availabilityslots',
+        localField: '_id',
+        foreignField: 'availabilityDayId',
+        as: 'availabilitySlots',
+      },
+    },
+  ]);
+  return result;
 };
 
 const AvailabilityDayServices = {
