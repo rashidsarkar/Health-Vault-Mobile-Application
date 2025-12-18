@@ -45,7 +45,10 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
 };
 
 const getMyAppointments = async (profileId: string) => {
-  const appointments = await Appointment.find({ normalUserId: profileId })
+  const appointments = await Appointment.find({
+    normalUserId: profileId,
+    status: { $in: ['PENDING', 'CONFIRMED'] },
+  })
     .populate('providerId normalUserId serviceId')
     .sort({ appointmentDateTime: -1 });
   return appointments;
