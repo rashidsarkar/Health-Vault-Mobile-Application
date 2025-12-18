@@ -50,7 +50,7 @@ export const uploadFile = () => {
       'image',
       'profile_image',
       'identification_images',
-      'article_images',
+      'appointment_images',
       'category_image',
       'video',
     ];
@@ -82,7 +82,7 @@ export const uploadFile = () => {
     { name: 'image', maxCount: 1 },
     { name: 'profile_image', maxCount: 1 },
     { name: 'identification_images', maxCount: 1 },
-    { name: 'article_images', maxCount: 5 },
+    { name: 'appointment_images', maxCount: 3 },
     { name: 'category_image', maxCount: 1 },
     { name: 'video', maxCount: 1 },
   ]);
