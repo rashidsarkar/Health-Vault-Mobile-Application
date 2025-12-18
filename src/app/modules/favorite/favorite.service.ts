@@ -14,7 +14,14 @@ const addFavorite = async (providerId: string, profileId: string) => {
     normalUserId: profileId,
     providerId: providerId,
   });
-  return result;
+  return result.populate('providerId');
+};
+
+const myFavorites = async (profileId: string) => {
+  const favorites = await Favorite.find({ normalUserId: profileId }).populate(
+    'providerId',
+  );
+  return favorites;
 };
 
 const removeFavorite = async (providerId: string, profileId: string) => {
@@ -30,5 +37,5 @@ const removeFavorite = async (providerId: string, profileId: string) => {
   return deleted;
 };
 
-const FavoriteServices = { addFavorite, removeFavorite };
+const FavoriteServices = { addFavorite, removeFavorite, myFavorites };
 export default FavoriteServices;

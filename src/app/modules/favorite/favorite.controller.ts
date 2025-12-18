@@ -18,6 +18,17 @@ const addFavorite = catchAsync(async (req, res) => {
   });
 });
 
+const myFavorites = catchAsync(async (req, res) => {
+  const result = await FavoriteServices.myFavorites(req.user.profileId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Favorites fetched successfully',
+    data: result,
+  });
+});
+
 const removeFavorite = catchAsync(async (req, res) => {
   const { providerId } = req.params;
 
@@ -34,5 +45,5 @@ const removeFavorite = catchAsync(async (req, res) => {
   });
 });
 
-const FavoriteController = { addFavorite, removeFavorite };
+const FavoriteController = { addFavorite, removeFavorite, myFavorites };
 export default FavoriteController;

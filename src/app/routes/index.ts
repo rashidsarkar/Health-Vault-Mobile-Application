@@ -8,6 +8,7 @@ import { providerTypesRoutes } from '../modules/providerTypes/providerTypes.rout
 import { availabilityDayRoutes } from '../modules/availabilityDay/availabilityDay.routes';
 import { availabilitySlotRoutes } from '../modules/availabilitySlot/availabilitySlot.routes';
 import { providerRoutes } from '../modules/provider/provider.routes';
+import { favoriteRoutes } from '../modules/favorite/favorite.routes';
 
 const router = Router();
 
@@ -43,6 +44,10 @@ const moduleRoutes = [
   {
     path: '/provider',
     route: providerRoutes,
+  },
+  {
+    path: '/favorite',
+    route: favoriteRoutes,
   },
 ];
 
