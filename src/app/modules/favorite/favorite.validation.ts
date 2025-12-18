@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 // export const updateFavoriteData = z.object({
 //     body: z.object({
 //         name: z.string().optional(),
@@ -8,5 +6,5 @@ import { z } from 'zod';
 //     }),
 // });
 
-const FavoriteValidations = { updateFavoriteData };
+const FavoriteValidations = {};
 export default FavoriteValidations;

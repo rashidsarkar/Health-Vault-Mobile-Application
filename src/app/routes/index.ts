@@ -9,6 +9,7 @@ import { availabilityDayRoutes } from '../modules/availabilityDay/availabilityDa
 import { availabilitySlotRoutes } from '../modules/availabilitySlot/availabilitySlot.routes';
 import { providerRoutes } from '../modules/provider/provider.routes';
 import { favoriteRoutes } from '../modules/favorite/favorite.routes';
+import { appointmentRoutes } from '../modules/appointment/appointment.routes';
 
 const router = Router();
 
@@ -48,6 +49,10 @@ const moduleRoutes = [
   {
     path: '/favorite',
     route: favoriteRoutes,
+  },
+  {
+    path: '/appointment',
+    route: appointmentRoutes,
   },
 ];
 
