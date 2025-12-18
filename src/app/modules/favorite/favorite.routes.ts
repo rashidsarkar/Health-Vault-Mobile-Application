@@ -15,7 +15,6 @@ router.get(
   auth(USER_ROLE.NORMALUSER),
   FavoriteController.myFavorites,
 );
-
 router.delete(
   '/:providerId',
   auth(USER_ROLE.NORMALUSER),
