@@ -29,5 +29,20 @@ router.get(
 
 //TODO -  removed this code after test
 router.get('/getAllUser', auth(USER_ROLE.ADMIN), UserControllers.getUsers);
+
+router.patch(
+  '/updateMe',
+  auth(USER_ROLE.NORMALUSER, USER_ROLE.ADMIN, USER_ROLE.PROVIDER),
+  uploadFile(),
+  (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(UserValidation.updateUserValidationSchema),
+  UserControllers.updateMyProfile,
+);
+
 export const UserRoutes = router;
 // todo

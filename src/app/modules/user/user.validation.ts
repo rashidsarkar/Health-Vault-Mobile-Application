@@ -15,6 +15,19 @@ const registerUserValidationSchema = z.object({
   }),
 });
 
+export const updateUserValidationSchema = z.object({
+  body: z
+    .object({
+      fullName: z.string().trim().optional(),
+      phone: z.string().optional(),
+      gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
+      dateOfBirth: z.coerce.date().optional(),
+      profile_image: z.string().optional(),
+    })
+    .strict(),
+});
+
 export const UserValidation = {
   registerUserValidationSchema,
+  updateUserValidationSchema,
 };

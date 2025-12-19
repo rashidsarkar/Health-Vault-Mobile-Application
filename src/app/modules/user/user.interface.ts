@@ -28,3 +28,11 @@ export interface UserModel extends Model<TUser> {
   isUserExists(email: string): Promise<boolean>;
   isPasswordMatch(plainTextPass: string, hashedPass: string): Promise<boolean>;
 }
+
+export interface UpdateUserPayload {
+  fullName?: string;
+  phone?: string;
+  gender?: 'MALE' | 'FEMALE';
+  dateOfBirth?: Date;
+  profile_image?: string;
+}

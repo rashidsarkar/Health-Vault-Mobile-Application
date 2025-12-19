@@ -4,6 +4,7 @@ import { UserServices } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 
 import { StatusCodes } from 'http-status-codes';
+import { updateUserValidationSchema } from './user.validation';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const { files } = req;
@@ -21,6 +22,27 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
     success: true,
     message:
       'User registered successfully and verification email sent successfully',
+    data: result,
+  });
+});
+const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const { files } = req;
+  updateUserValidationSchema.parse({ body: req.body });
+  // 1️⃣ Handle profile image upload
+  if (files && typeof files === 'object' && 'profile_image' in files) {
+    req.body.profile_image = files['profile_image'][0].path;
+  }
+
+  const result = await UserServices.updateMyProfileIntoDB(
+    req.user.profileId,
+    req.user.role,
+    req.body,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Profile updated successfully',
     data: result,
   });
 });
@@ -50,4 +72,5 @@ export const UserControllers = {
   createUser,
   getMe,
   getUsers,
+  updateMyProfile,
 };
