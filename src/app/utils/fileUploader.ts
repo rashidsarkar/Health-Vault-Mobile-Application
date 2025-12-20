@@ -12,8 +12,10 @@ export const uploadFile = () => {
         uploadPath = 'uploads/images/profile';
       } else if (file.fieldname === 'identification_images') {
         uploadPath = 'uploads/images/identification_images';
-      } else if (file.fieldname === 'article_images') {
-        uploadPath = 'uploads/images/article_images';
+      } else if (file.fieldname === 'medical_mySelf_image') {
+        uploadPath = 'uploads/images/medical_mySelf_image';
+      } else if (file.fieldname === 'medical_family_image') {
+        uploadPath = 'uploads/images/medical_family_image';
       } else if (file.fieldname === 'video') {
         uploadPath = 'uploads/video';
       } else if (file.fieldname === 'category_image') {
@@ -52,6 +54,8 @@ export const uploadFile = () => {
       'identification_images',
       'appointment_images',
       'category_image',
+      'medical_mySelf_image',
+      'medical_family_image',
       'video',
     ];
 
@@ -84,6 +88,8 @@ export const uploadFile = () => {
     { name: 'identification_images', maxCount: 1 },
     { name: 'appointment_images', maxCount: 3 },
     { name: 'category_image', maxCount: 1 },
+    { name: 'medical_mySelf_image', maxCount: 4 },
+    { name: 'medical_family_image', maxCount: 4 },
     { name: 'video', maxCount: 1 },
   ]);
 

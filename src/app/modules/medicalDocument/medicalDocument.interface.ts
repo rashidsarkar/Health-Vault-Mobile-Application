@@ -2,8 +2,8 @@ import { Types } from 'mongoose';
 
 export interface IMedicalDocument {
   normalUserId: Types.ObjectId;
-  mySelf?: string[];
-  deleteMydoc?: string[];
-  deleteFamilydoc?: string[];
-  family?: string[];
+  medical_mySelf_image?: string[];
+  medical_family_image?: string[];
+  deleteMedical_mySelf_image?: string[];
+  deleteMedical_family_image?: string[];
 }

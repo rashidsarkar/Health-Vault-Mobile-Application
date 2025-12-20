@@ -9,11 +9,13 @@ const medicalDocumentSchema = new Schema<IMedicalDocument>(
       required: true,
       unique: true, // one document collection per user
     },
-    mySelf: {
+    medical_mySelf_image: {
       type: [String],
+      default: [],
     },
-    family: {
+    medical_family_image: {
       type: [String],
+      default: [],
     },
   },
   { timestamps: true },

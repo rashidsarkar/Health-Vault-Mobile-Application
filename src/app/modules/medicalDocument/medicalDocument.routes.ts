@@ -8,6 +8,19 @@ import { uploadFile } from '../../utils/fileUploader';
 
 const router = express.Router();
 
+router.post(
+  '/create-document',
+  auth(USER_ROLE.NORMALUSER),
+  uploadFile(),
+  (req, res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
+  medicalDocumentController.createUserMedicalDocument,
+);
 router.patch(
   '/update-document',
   auth(USER_ROLE.NORMALUSER),
@@ -19,7 +32,7 @@ router.patch(
     next();
   },
   validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
-  medicalDocumentController.updateUserProfile,
+  medicalDocumentController.updateUserMedicalDocument,
 );
 
 export const medicalDocumentRoutes = router;

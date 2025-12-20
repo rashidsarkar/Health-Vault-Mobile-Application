@@ -10,6 +10,7 @@ import { availabilitySlotRoutes } from '../modules/availabilitySlot/availability
 import { providerRoutes } from '../modules/provider/provider.routes';
 import { favoriteRoutes } from '../modules/favorite/favorite.routes';
 import { appointmentRoutes } from '../modules/appointment/appointment.routes';
+import { medicalDocumentRoutes } from '../modules/medicalDocument/medicalDocument.routes';
 
 const router = Router();
 
@@ -53,6 +54,10 @@ const moduleRoutes = [
   {
     path: '/appointment',
     route: appointmentRoutes,
+  },
+  {
+    path: '/medicalDocument',
+    route: medicalDocumentRoutes,
   },
 ];
 
