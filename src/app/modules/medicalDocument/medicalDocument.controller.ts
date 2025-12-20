@@ -40,10 +40,17 @@ const createUserMedicalDocument = catchAsync(async (req, res) => {
 const updateUserMedicalDocument = catchAsync(async (req, res) => {
   const { files } = req;
   if (files && typeof files === 'object' && 'medical_mySelf_image' in files) {
-    req.body.medical_mySelf_image = files['medical_mySelf_image'][0].path;
+    // req.body.medical_mySelf_image = files['medical_mySelf_image'][0].path;
+
+    req.body.medical_mySelf_image = files['medical_mySelf_image'].map(
+      (file) => `${file.path}`,
+    );
   }
   if (files && typeof files === 'object' && 'medical_family_image' in files) {
-    req.body.medical_family_image = files['medical_family_image'][0].path;
+    // req.body.medical_family_image = files['medical_family_image'][0].path;
+    req.body.medical_family_image = files['medical_family_image'].map(
+      (file) => `${file.path}`,
+    );
   }
   const result = await medicalDocumentServices.updateUserMedicalDocument(
     req.user.profileId,
