@@ -11,6 +11,7 @@ import { providerRoutes } from '../modules/provider/provider.routes';
 import { favoriteRoutes } from '../modules/favorite/favorite.routes';
 import { appointmentRoutes } from '../modules/appointment/appointment.routes';
 import { medicalDocumentRoutes } from '../modules/medicalDocument/medicalDocument.routes';
+import { insuranceRoutes } from '../modules/insurance/insurance.routes';
 
 const router = Router();
 
@@ -58,6 +59,10 @@ const moduleRoutes = [
   {
     path: '/medicalDocument',
     route: medicalDocumentRoutes,
+  },
+  {
+    path: '/insurance',
+    route: insuranceRoutes,
   },
 ];
 

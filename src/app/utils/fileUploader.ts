@@ -16,6 +16,8 @@ export const uploadFile = () => {
         uploadPath = 'uploads/images/medical_mySelf_image';
       } else if (file.fieldname === 'medical_family_image') {
         uploadPath = 'uploads/images/medical_family_image';
+      } else if (file.fieldname === 'insurance_Photo') {
+        uploadPath = 'uploads/images/insurance_Photo';
       } else if (file.fieldname === 'video') {
         uploadPath = 'uploads/video';
       } else if (file.fieldname === 'category_image') {
@@ -56,6 +58,7 @@ export const uploadFile = () => {
       'category_image',
       'medical_mySelf_image',
       'medical_family_image',
+      'insurance_Photo',
       'video',
     ];
 
@@ -90,6 +93,7 @@ export const uploadFile = () => {
     { name: 'category_image', maxCount: 1 },
     { name: 'medical_mySelf_image', maxCount: 4 },
     { name: 'medical_family_image', maxCount: 4 },
+    { name: 'insurance_Photo', maxCount: 4 },
     { name: 'video', maxCount: 1 },
   ]);
 
