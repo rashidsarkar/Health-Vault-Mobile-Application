@@ -31,7 +31,7 @@ const getAdminServices = catchAsync(async (req, res) => {
 const getMyCreatedServices = catchAsync(async (req, res) => {
   const result = await ServiceServices.getMyCreatedServices(
     req?.user?.profileId,
-    req.user.role,
+    
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
