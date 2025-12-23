@@ -10,6 +10,7 @@ import { StatusCodes } from 'http-status-codes';
 import { getIO } from '../../socket/socket';
 
 const getAllNotificationFromDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: Record<string, any>,
   user: JwtPayload,
 ) => {

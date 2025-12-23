@@ -13,6 +13,7 @@ import { appointmentRoutes } from '../modules/appointment/appointment.routes';
 import { medicalDocumentRoutes } from '../modules/medicalDocument/medicalDocument.routes';
 import { insuranceRoutes } from '../modules/insurance/insurance.routes';
 import { healthLogRoutes } from '../modules/healthLog/healthLog.routes';
+import { notificationRoutes } from '../modules/notification/notification.routes';
 
 const router = Router();
 
@@ -68,6 +69,10 @@ const moduleRoutes = [
   {
     path: '/healthLog',
     route: healthLogRoutes,
+  },
+  {
+    path: '/notification',
+    route: notificationRoutes,
   },
 ];
 
