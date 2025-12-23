@@ -33,20 +33,37 @@ const getAdminServices = async (providerType: string) => {
   return services;
 };
 
-const getMyCreatedServices = async (
-  profileId: string,
-  providerType: string,
-) => {
+const getMyCreatedServices = async (profileId: string) => {
   const services = await Service.find({
-    providerType: providerType,
     providerId: profileId,
   });
+
   return services;
+};
+
+const updatedService = async (
+  id: string,
+  profileId: string,
+  payload: IService,
+) => {
+  const result = await Service.findOneAndUpdate(
+    { providerId: profileId, _id: id },
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Service not found');
+  }
+  return result;
 };
 
 const ServiceServices = {
   createService,
   getAdminServices,
   getMyCreatedServices,
+  updatedService,
 };
 export default ServiceServices;
