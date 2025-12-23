@@ -3,6 +3,11 @@ import { USER_ROLE } from '../user/user.const';
 
 import Notification from './notification.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import getAdminNotificationCount from '../../helper/getAdminNotification';
+import getNotificationCount from '../../helper/getUnseenNotification';
+import AppError from '../../errors/AppError';
+import { StatusCodes } from 'http-status-codes';
+import { getIO } from '../../socket/socket';
 
 const getAllNotificationFromDB = async (
   query: Record<string, any>,
@@ -46,9 +51,9 @@ const getAllNotificationFromDB = async (
 const seeNotification = async (user: JwtPayload) => {
   let result;
   const io = getIO();
-  if (user?.role === USER_ROLE.superAdmin) {
+  if (user?.role === USER_ROLE.ADMIN) {
     result = await Notification.updateMany(
-      { $or: [{ receiver: USER_ROLE.superAdmin }, { receiver: 'all' }] },
+      { $or: [{ receiver: USER_ROLE.ADMIN }, { receiver: 'all' }] },
       { $addToSet: { seenBy: user.profileId } },
       { runValidators: true, new: true },
     );
@@ -57,9 +62,9 @@ const seeNotification = async (user: JwtPayload) => {
     io.emit('admin-notifications', adminUnseenNotificationCount);
     io.emit('notifications', notificationCount);
   }
-  if (user?.role !== USER_ROLE.superAdmin) {
+  if (user?.role !== USER_ROLE.ADMIN) {
     result = await Notification.updateMany(
-      { $or: [{ receiver: user.profileid }, { receiver: 'all' }] },
+      { $or: [{ receiver: user.profileId }, { receiver: 'all' }] },
       { $addToSet: { seenBy: user.profileId } },
       { runValidators: true, new: true },
     );
@@ -72,7 +77,7 @@ const seeNotification = async (user: JwtPayload) => {
 const deleteNotification = async (id: string, profileId: string) => {
   const notification = await Notification.findById(id);
   if (!notification) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Notification not found');
+    throw new AppError(StatusCodes.NOT_FOUND, 'Notification not found');
   }
   if (notification.receiver == profileId) {
     const reusult = await Notification.findByIdAndDelete(id);
