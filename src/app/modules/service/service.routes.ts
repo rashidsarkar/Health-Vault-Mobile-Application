@@ -17,4 +17,10 @@ router.get(
   ServiceController.getMyCreatedServices,
 );
 
+router.patch(
+  '/update-service/:id',
+  auth(...Object.values(USER_ROLE)),
+  ServiceController.updatedService,
+);
+
 export const serviceRoutes = router;

@@ -51,6 +51,7 @@ const updatedService = async (
     payload,
     {
       new: true,
+      runValidators: true,
     },
   );
   if (!result) {

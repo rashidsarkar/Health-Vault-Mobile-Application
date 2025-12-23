@@ -31,7 +31,6 @@ const getAdminServices = catchAsync(async (req, res) => {
 const getMyCreatedServices = catchAsync(async (req, res) => {
   const result = await ServiceServices.getMyCreatedServices(
     req?.user?.profileId,
-    
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -41,9 +40,24 @@ const getMyCreatedServices = catchAsync(async (req, res) => {
   });
 });
 
+const updatedService = catchAsync(async (req, res) => {
+  const result = await ServiceServices.updatedService(
+    req.params.id,
+    req?.user?.profileId,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Service updated successfully',
+    data: result,
+  });
+});
+
 const ServiceController = {
   createService,
   getAdminServices,
   getMyCreatedServices,
+  updatedService,
 };
 export default ServiceController;
