@@ -4,6 +4,10 @@ import { IAppointment } from './appointment.interface';
 import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
 import Notification from '../notification/notification.model';
+import {
+  sendBatchPushNotification,
+  sendSinglePushNotification,
+} from '../../helper/sendPushNotification';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -59,6 +63,12 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
     message: `You have a new appointment `,
     receiver: 'all',
   });
+
+  await sendSinglePushNotification(
+    payload.providerId.toString() as string,
+    'New Appointment',
+    'You have a new appointment',
+  );
 
   const createAppointment = await result.populate(
     'providerId normalUserId serviceId',
