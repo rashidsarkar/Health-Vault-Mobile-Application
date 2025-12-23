@@ -17,6 +17,7 @@ export type TUser = {
   verifyEmailOTPExpire?: Date;
   isResetOTPVerified?: boolean;
   isVerifyEmailOTPVerified?: boolean;
+  playerIds: string[];
 };
 export type TLoginUser = {
   email: string;

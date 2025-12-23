@@ -12,6 +12,7 @@ const registerUserValidationSchema = z.object({
     password: z.string().min(6, 'Password must be at least 6 characters long'),
     role: z.nativeEnum(USER_ROLE),
     phone: z.string().trim(),
+    playerId: z.string().optional(),
   }),
 });
 

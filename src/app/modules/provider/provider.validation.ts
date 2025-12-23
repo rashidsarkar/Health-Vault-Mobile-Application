@@ -25,6 +25,7 @@ const doctorSchema = z
       about: z.string(),
       isVerified: z.boolean().optional(),
       isActive: z.boolean().optional(),
+      playerId: z.string().optional(),
     }),
   })
   .strict();
@@ -52,6 +53,7 @@ const otherProviderSchema = z
       about: z.string(),
       isVerified: z.boolean().optional(),
       isActive: z.boolean().optional(),
+      playerId: z.string().optional(),
     }),
   })
   .strict();
@@ -120,6 +122,7 @@ export const updateProviderData = z.object({
 
     isVerified: z.boolean().optional(),
     isActive: z.boolean().optional(),
+    playerId: z.string().optional(),
   }),
 });
 
