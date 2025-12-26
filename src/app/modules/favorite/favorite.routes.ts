@@ -2,6 +2,7 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.const';
 import FavoriteController from './favorite.controller';
+import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 
 const router = express.Router();
 
@@ -20,5 +21,7 @@ router.delete(
   auth(USER_ROLE.NORMALUSER),
   FavoriteController.removeFavorite,
 );
+
+router.put('/test', FavoriteController.testNoti);
 
 export const favoriteRoutes = router;

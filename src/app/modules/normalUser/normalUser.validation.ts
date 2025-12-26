@@ -12,6 +12,7 @@ export const createNormalUserData = z.object({
     address: z.string(),
     emergencyContact: z.string(),
     identificationNumber: z.string(),
+    playerId: z.string().optional(),
   }),
 });
 

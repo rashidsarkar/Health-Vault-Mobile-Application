@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../errors/AppError';
 import AvailabilityDay from '../availabilityDay/availabilityDay.model';
 import { IAvailabilitySlot } from './availabilitySlot.interface';
 import AvailabilitySlot from './availabilitySlot.model';
@@ -42,5 +44,45 @@ const createAvailabilitySlot = async (
   return await AvailabilitySlot.create(payload);
 };
 
-const AvailabilitySlotServices = { createAvailabilitySlot };
+const deleteAvailabilitySlot = async (
+  availabilityDayId: string,
+  profileId: string,
+  availabilitySlotId: string,
+) => {
+  const availabilityDay = await AvailabilityDay.findOne({
+    _id: availabilityDayId,
+    providerId: profileId,
+  });
+
+  if (!availabilityDay) {
+    throw new AppError(
+      StatusCodes.UNAUTHORIZED,
+      'Unauthorized to delete this slot',
+    );
+  }
+  const result = await AvailabilitySlot.findOneAndDelete(
+    {
+      _id: availabilitySlotId,
+      availabilityDayId: availabilityDay._id,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  if (!result) {
+    // throw new Error('Availability slot not found')
+    throw new AppError(StatusCodes.NOT_FOUND, 'Availability slot not found');
+  }
+  return result;
+  //   return await AvailabilitySlot.findOneAndDelete({
+  //     _id: availabilitySlotId,
+  //     availabilityDayId:profileId
+  //   });
+};
+
+const AvailabilitySlotServices = {
+  createAvailabilitySlot,
+  deleteAvailabilitySlot,
+};
 export default AvailabilitySlotServices;

@@ -16,5 +16,23 @@ const createAvailabilitySlot = catchAsync(async (req, res) => {
   });
 });
 
-const AvailabilitySlotController = { createAvailabilitySlot };
+const deleteAvailabilitySlot = catchAsync(async (req, res) => {
+  const { availabilityDayId, availabilitySlotId } = req.body;
+  const result = await availabilitySlotServices.deleteAvailabilitySlot(
+    availabilityDayId,
+    req.user.profileId,
+    availabilitySlotId,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Availability slot deleted',
+    data: result,
+  });
+});
+
+const AvailabilitySlotController = {
+  createAvailabilitySlot,
+  deleteAvailabilitySlot,
+};
 export default AvailabilitySlotController;

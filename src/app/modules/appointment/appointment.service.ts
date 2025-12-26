@@ -3,6 +3,13 @@ import AppError from '../../errors/AppError';
 import { IAppointment } from './appointment.interface';
 import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
+import Notification from '../notification/notification.model';
+import {
+  sendBatchPushNotification,
+  sendSinglePushNotification,
+} from '../../helper/sendPushNotification';
+import { getIO } from '../../socket/socket';
+import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -36,6 +43,41 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   const result = await Appointment.create({
     ...payload,
     normalUserId: profileId,
+  });
+
+  if (!result) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to create appointment');
+  }
+  // await Notification.insertMany(notifications);
+  //             // send push notifications in batch
+  //             await sendBatchPushNotification(userIds, title, message, {
+  //                 eventId: result._id,
+  //                 status: result.status,
+  //             });
+
+  // await Notification.create({
+  //   title: 'New Appointment',
+  //   message: `You have a new appointment `,
+  //   receiver: payload.providerId,
+  // });
+  // await Notification.create({
+  //   title: 'New Appointment',
+  //   message: `You have a new appointment `,
+  //   receiver: 'all',
+  // });
+  // // io.to(user.profileId.toString()).emit('notifications', notificationCount);
+  // const count = await getNotificationCount(payload.providerId);
+
+  // await sendSinglePushNotification(
+  //   payload.providerId.toString() as string,
+  //   'New Appointment',
+  //   'You have a new appointment',
+  // );
+
+  await sendRealTimeNotification({
+    receivers: [payload.providerId.toString(), 'admin'],
+    title: 'Group Notification',
+    message: 'Message for everyone',
   });
 
   const createAppointment = await result.populate(

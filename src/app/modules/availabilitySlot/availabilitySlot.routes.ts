@@ -13,5 +13,9 @@ router.post(
   validateRequest(AvailabilitySlotValidations.createAvailabilitySlot),
   AvailabilitySlotController.createAvailabilitySlot,
 );
-
+router.delete(
+  '/delete-availability-slot',
+  auth(USER_ROLE.PROVIDER),
+  AvailabilitySlotController.deleteAvailabilitySlot,
+);
 export const availabilitySlotRoutes = router;
