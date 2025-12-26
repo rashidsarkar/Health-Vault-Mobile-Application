@@ -2,9 +2,18 @@ import Notification from '../modules/notification/notification.model';
 
 const getNotificationCount = async (receiver: string = '') => {
   const unseenCount = await Notification.countDocuments({
-    seenBy: { $eq: receiver },
-    $or: [{ receiver: receiver }, { receiver: 'all' }],
+    $and: [
+      {
+        $or: [
+          { receiver: receiver },
+          { receiver: 'all' }
+        ]
+      },
+      { seenBy: { $ne: receiver } },
+      { deleteBy: { $ne: receiver } }
+    ]
   });
+
   const latestNotification = await Notification.findOne({
     $or: [{ receiver: receiver }, { receiver: 'all' }],
   })

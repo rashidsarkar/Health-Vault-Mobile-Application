@@ -8,6 +8,8 @@ import {
   sendBatchPushNotification,
   sendSinglePushNotification,
 } from '../../helper/sendPushNotification';
+import { getIO } from '../../socket/socket';
+import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -53,22 +55,30 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   //                 status: result.status,
   //             });
 
-  await Notification.create({
-    title: 'New Appointment',
-    message: `You have a new appointment `,
-    receiver: payload.providerId,
-  });
-  await Notification.create({
-    title: 'New Appointment',
-    message: `You have a new appointment `,
-    receiver: 'all',
-  });
+  // await Notification.create({
+  //   title: 'New Appointment',
+  //   message: `You have a new appointment `,
+  //   receiver: payload.providerId,
+  // });
+  // await Notification.create({
+  //   title: 'New Appointment',
+  //   message: `You have a new appointment `,
+  //   receiver: 'all',
+  // });
+  // // io.to(user.profileId.toString()).emit('notifications', notificationCount);
+  // const count = await getNotificationCount(payload.providerId);
 
-  await sendSinglePushNotification(
-    payload.providerId.toString() as string,
-    'New Appointment',
-    'You have a new appointment',
-  );
+  // await sendSinglePushNotification(
+  //   payload.providerId.toString() as string,
+  //   'New Appointment',
+  //   'You have a new appointment',
+  // );
+
+  await sendRealTimeNotification({
+    receivers: [payload.providerId.toString(), 'admin'],
+    title: 'Group Notification',
+    message: 'Message for everyone',
+  });
 
   const createAppointment = await result.populate(
     'providerId normalUserId serviceId',
