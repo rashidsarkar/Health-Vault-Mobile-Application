@@ -10,6 +10,7 @@ import {
 } from '../../helper/sendPushNotification';
 import { getIO } from '../../socket/socket';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
+import getAdminIds from '../../utils/findAllDminIds';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -74,10 +75,17 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   //   'You have a new appointment',
   // );
 
+  // await sendRealTimeNotification({
+  //   receivers: [payload.providerId.toString(), 'admin'],
+  //   title: 'Group Notification',
+  //   message: 'Message for everyone',
+  // });
+
+  const adminIds = await getAdminIds();
   await sendRealTimeNotification({
-    receivers: [payload.providerId.toString(), 'admin'],
-    title: 'Group Notification',
-    message: 'Message for everyone',
+    receivers: [`${result.providerId}`, ...adminIds],
+    title: 'New Appointment Request Created',
+    message: 'You have a new appointment request',
   });
 
   const createAppointment = await result.populate(
