@@ -18,7 +18,7 @@ const getAllNotificationFromDB = async (
   if (user?.role === USER_ROLE.ADMIN) {
     const notificationQuery = new QueryBuilder(
       Notification.find({
-        $or: [{ receiver: USER_ROLE.ADMIN }, { receiver: 'all' }],
+        $or: [{ receiver: user.profileId }, { receiver: 'all' }],
         deleteBy: { $ne: user.profileId },
       }),
       query,
@@ -56,7 +56,7 @@ const seeNotification = async (user: JwtPayload) => {
 
   if (user?.role === USER_ROLE.ADMIN) {
     result = await Notification.updateMany(
-      { $or: [{ receiver: USER_ROLE.ADMIN }, { receiver: 'all' }] },
+      { $or: [{ receiver: user.profileId }, { receiver: 'all' }] },
       { $addToSet: { seenBy: user.profileId } },
       { runValidators: true, new: true },
     );

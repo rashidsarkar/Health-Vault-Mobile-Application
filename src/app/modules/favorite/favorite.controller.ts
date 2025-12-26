@@ -3,6 +3,8 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import FavoriteServices from './favorite.service';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
+import { USER_ROLE } from '../user/user.const';
+import getAdminIds from '../../utils/findAllDminIds';
 
 const addFavorite = catchAsync(async (req, res) => {
   const { providerId } = req.params;
@@ -46,8 +48,9 @@ const removeFavorite = catchAsync(async (req, res) => {
   });
 });
 const testNoti = catchAsync(async (req, res) => {
+  const adminIds = await getAdminIds();
   const result = await sendRealTimeNotification({
-    receivers: ['693fef5afc65410271ac7c86'],
+    receivers: ['all', ...adminIds],
     title: 'Group Notification',
     message: 'Message for everyone',
   });

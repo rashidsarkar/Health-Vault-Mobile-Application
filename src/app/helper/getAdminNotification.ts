@@ -13,11 +13,7 @@ const getAdminNotificationCount = async () => {
       { receiver: 'all' },
     ],
   });
-  // const unseenCount = await Notification.countDocuments({
-  //   receiver: { $in: [USER_ROLE.ADMIN, 'all'] },
-  //   seenBy: { $ne: '693e852f2a9201212e6ffb43' }, // এই admin এখনো দেখেনি
-  // });
-  // console.log('unseencoount==================================', unseenCount);
+
   const latestNotification = await Notification.findOne({
     $or: [
       {
