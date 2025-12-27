@@ -27,4 +27,10 @@ router.get(
   AppointmentController.getMyAppointments,
 );
 
+router.get(
+  '/provider-appointments',
+  auth(USER_ROLE.PROVIDER),
+  AppointmentController.getProviderAppointments,
+);
+
 export const appointmentRoutes = router;

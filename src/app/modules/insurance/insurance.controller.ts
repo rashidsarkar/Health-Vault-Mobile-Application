@@ -31,32 +31,54 @@ const createInsurance = catchAsync(async (req, res) => {
   });
 });
 
-// const updateInsurance = catchAsync(async (req, res) => {
-//   const { files } = req;
-//   const { deleteInsurancePhoto } = req.body;
+const updateInsurance = catchAsync(async (req, res) => {
+  const { files } = req;
 
-//   if (deleteInsurancePhoto) {
-//     unlinkFile(deleteInsurancePhoto);
-//     req.body.insurance_Photo = undefined;
-//   }
+  if (files && typeof files === 'object' && 'insurance_Photo' in files) {
+    req.body.insurance_Photo = files['insurance_Photo'][0].path;
+  }
 
-//   if (files && typeof files === 'object' && 'insurance_Photo' in files) {
-//     req.body.insurance_Photo = files['insurance_Photo'][0].path;
-//   }
+  const result = await InsuranceServices.updateInsurance(
+    req.params.id,
+    req.user.profileId,
+    req.body,
+  );
 
-//   const result = await InsuranceServices.updateInsurance(
-//     req.params.id,
-//     req.user.profileId,
-//     req.body,
-//   );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Insurance updated successfully',
+    data: result,
+  });
+});
 
-//   sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: 'Insurance updated successfully',
-//     data: result,
-//   });
-// });
+const deleteInsurance = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await InsuranceServices.deleteInsurance(
+    id,
+    req.user.profileId,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Insurance deleted successfully',
+    data: result,
+  });
+});
 
-const InsuranceController = { createInsurance };
+const getMyInsurances = catchAsync(async (req, res) => {
+  const result = await InsuranceServices.getMyInsurances(req.user.profileId);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Insurances fetched successfully',
+    data: result,
+  });
+});
+const InsuranceController = {
+  createInsurance,
+  updateInsurance,
+  deleteInsurance,
+  getMyInsurances,
+};
 export default InsuranceController;

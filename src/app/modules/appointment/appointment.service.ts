@@ -3,12 +3,6 @@ import AppError from '../../errors/AppError';
 import { IAppointment } from './appointment.interface';
 import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
-import Notification from '../notification/notification.model';
-import {
-  sendBatchPushNotification,
-  sendSinglePushNotification,
-} from '../../helper/sendPushNotification';
-import { getIO } from '../../socket/socket';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 import getAdminIds from '../../utils/findAllDminIds';
 
@@ -104,5 +98,51 @@ const getMyAppointments = async (profileId: string) => {
   return appointments;
 };
 
-const AppointmentServices = { createAppointment, getMyAppointments };
+const getProviderAppointments = async (
+  providerId: string,
+  query: Record<string, unknown>,
+) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    providerId,
+    status: { $in: ['PENDING', 'CONFIRMED'] },
+  };
+
+  // 🔢 Total count
+  const total = await Appointment.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  // 📄 Paginated data
+  const appointments = await Appointment.find(filter)
+    .populate({
+      path: 'normalUserId',
+      select: 'fullName',
+    })
+    .populate({
+      path: 'serviceId',
+      select: 'title price',
+    })
+    .sort({ appointmentDateTime: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: appointments,
+  };
+};
+
+const AppointmentServices = {
+  createAppointment,
+  getMyAppointments,
+  getProviderAppointments,
+};
 export default AppointmentServices;
