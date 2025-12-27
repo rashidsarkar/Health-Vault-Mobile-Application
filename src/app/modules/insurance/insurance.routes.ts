@@ -29,24 +29,30 @@ router.post(
 //   InsuranceController.getMyInsurances,
 // );
 
-// router.patch(
-//   '/:id',
-//   auth(USER_ROLE.NORMALUSER),
-//   uploadFile(),
-//   (req, res, next) => {
-//     if (req.body.data) {
-//       req.body = JSON.parse(req.body.data);
-//     }
-//     next();
-//   },
-//   validateRequest(InsuranceValidations.updateInsurance),
-//   InsuranceController.updateInsurance,
-// );
+router.patch(
+  '/:id',
+  auth(USER_ROLE.NORMALUSER),
+  uploadFile(),
+  (req, res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(InsuranceValidations.updateInsurance),
+  InsuranceController.updateInsurance,
+);
 
-// router.delete(
-//   '/:id',
-//   auth(USER_ROLE.NORMALUSER),
-//   InsuranceController.deleteInsurance,
-// );
+router.delete(
+  '/:id',
+  auth(USER_ROLE.NORMALUSER),
+  InsuranceController.deleteInsurance,
+);
+
+router.get(
+  '/',
+  auth(USER_ROLE.NORMALUSER),
+  InsuranceController.getMyInsurances,
+);
 
 export const insuranceRoutes = router;

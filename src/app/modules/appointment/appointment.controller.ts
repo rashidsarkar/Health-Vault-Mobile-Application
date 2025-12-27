@@ -35,5 +35,23 @@ const getMyAppointments = catchAsync(async (req, res) => {
   });
 });
 
-const AppointmentController = { createAppointment, getMyAppointments };
+const getProviderAppointments = catchAsync(async (req, res) => {
+  const result = await appointmentServices.getProviderAppointments(
+    req.user.profileId,
+    req.query,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Appointments fetched successfully',
+    data: result,
+  });
+});
+
+const AppointmentController = {
+  createAppointment,
+  getMyAppointments,
+  getProviderAppointments,
+};
 export default AppointmentController;

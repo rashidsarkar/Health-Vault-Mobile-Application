@@ -3,13 +3,8 @@ import AppError from '../../errors/AppError';
 import { IAppointment } from './appointment.interface';
 import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
-import Notification from '../notification/notification.model';
-import {
-  sendBatchPushNotification,
-  sendSinglePushNotification,
-} from '../../helper/sendPushNotification';
-import { getIO } from '../../socket/socket';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
+import getAdminIds from '../../utils/findAllDminIds';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -74,10 +69,17 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   //   'You have a new appointment',
   // );
 
+  // await sendRealTimeNotification({
+  //   receivers: [payload.providerId.toString(), 'admin'],
+  //   title: 'Group Notification',
+  //   message: 'Message for everyone',
+  // });
+
+  const adminIds = await getAdminIds();
   await sendRealTimeNotification({
-    receivers: [payload.providerId.toString(), 'admin'],
-    title: 'Group Notification',
-    message: 'Message for everyone',
+    receivers: [`${result.providerId}`, ...adminIds],
+    title: 'New Appointment Request Created',
+    message: 'You have a new appointment request',
   });
 
   const createAppointment = await result.populate(
@@ -96,5 +98,55 @@ const getMyAppointments = async (profileId: string) => {
   return appointments;
 };
 
-const AppointmentServices = { createAppointment, getMyAppointments };
+const getProviderAppointments = async (
+  providerId: string,
+  query: Record<string, unknown>,
+) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    providerId,
+    status: { $in: ['PENDING', 'CONFIRMED'] },
+  };
+
+  // 🔢 Total count
+  const total = await Appointment.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  // 📄 Paginated data
+  const appointments = await Appointment.find(filter)
+    .populate({
+      path: 'normalUserId',
+      select: 'fullName profile_image',
+    })
+    .populate({
+      path: 'serviceId',
+      select: 'title price',
+    })
+    .populate({
+      path: 'providerId',
+      select: 'address',
+    })
+    .sort({ appointmentDateTime: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: appointments,
+  };
+};
+
+const AppointmentServices = {
+  createAppointment,
+  getMyAppointments,
+  getProviderAppointments,
+};
 export default AppointmentServices;

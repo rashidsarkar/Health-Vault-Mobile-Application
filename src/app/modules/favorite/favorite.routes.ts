@@ -22,6 +22,4 @@ router.delete(
   FavoriteController.removeFavorite,
 );
 
-router.put('/test', FavoriteController.testNoti);
-
 export const favoriteRoutes = router;
