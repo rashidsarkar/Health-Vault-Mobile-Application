@@ -119,11 +119,15 @@ const getProviderAppointments = async (
   const appointments = await Appointment.find(filter)
     .populate({
       path: 'normalUserId',
-      select: 'fullName',
+      select: 'fullName profile_image',
     })
     .populate({
       path: 'serviceId',
       select: 'title price',
+    })
+    .populate({
+      path: 'providerId',
+      select: 'address',
     })
     .sort({ appointmentDateTime: -1 })
     .skip(skip)
