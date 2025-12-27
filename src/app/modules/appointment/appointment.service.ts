@@ -144,9 +144,56 @@ const getProviderAppointments = async (
   };
 };
 
+const getAllAppointments = async (query: Record<string, unknown>) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    status: { $in: ['PENDING', 'CONFIRMED'] },
+  };
+
+  // 🔢 Total count
+  const total = await Appointment.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  // 📄 Paginated data
+  const appointments = await Appointment.find(filter)
+    .populate({
+      path: 'normalUserId',
+      select: 'fullName profile_image',
+    })
+    .populate({
+      path: 'serviceId',
+      select: 'title price',
+    })
+    .populate({
+      path: 'providerId',
+      select: 'address providerTypeId',
+      populate: {
+        path: 'providerTypeId',
+        select: 'key',
+      },
+    })
+    .sort({ appointmentDateTime: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: appointments,
+  };
+};
+
 const AppointmentServices = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
+  getAllAppointments,
 };
 export default AppointmentServices;
