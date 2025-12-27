@@ -14,6 +14,7 @@ import { medicalDocumentRoutes } from '../modules/medicalDocument/medicalDocumen
 import { insuranceRoutes } from '../modules/insurance/insurance.routes';
 import { healthLogRoutes } from '../modules/healthLog/healthLog.routes';
 import { notificationRoutes } from '../modules/notification/notification.routes';
+import { metaRoutes } from '../modules/meta/meta.routes';
 
 const router = Router();
 
@@ -73,6 +74,10 @@ const moduleRoutes = [
   {
     path: '/notification',
     route: notificationRoutes,
+  },
+  {
+    path: '/meta',
+    route: metaRoutes,
   },
 ];
 

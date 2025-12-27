@@ -1,24 +1,25 @@
 import express from 'express';
 import auth from '../../middlewares/auth';
-import { USER_ROLE } from '../user/user.constant';
+
 import MetaController from './meta.controller';
+import { USER_ROLE } from '../user/user.const';
 
 const router = express.Router();
 
 router.get(
-    '/meta-data',
-    auth(USER_ROLE.superAdmin),
-    MetaController.getDashboardMetaData
+  '/meta-data',
+  auth(USER_ROLE.ADMIN),
+  MetaController.getDashboardMetaData,
 );
 router.get(
-    '/normalUser-chart-data',
-    auth(USER_ROLE.superAdmin),
-    MetaController.getNormalUserChartData
+  '/normalUser-chart-data',
+  auth(USER_ROLE.ADMIN),
+  MetaController.getNormalUserChartData,
 );
 router.get(
-    '/organizer-chart-data',
-    auth(USER_ROLE.superAdmin),
-    MetaController.getOrganizerChartData
+  '/provider-chart-data',
+  auth(USER_ROLE.ADMIN),
+  MetaController.getProviderChartData,
 );
 
 export const metaRoutes = router;
