@@ -1,4 +1,7 @@
 import express from 'express';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.const';
+import NormalUserController from './normalUser.controller';
 
 const router = express.Router();
 
@@ -15,5 +18,13 @@ const router = express.Router();
 //     validateRequest(normalUserValidations.updateNormalUserData),
 //     normalUserController.updateUserProfile
 // );
+
+router.get(
+  '/:id',
+  auth(USER_ROLE.ADMIN),
+  NormalUserController.getSingleNormalUserProfile,
+);
+
+router.get('/', auth(USER_ROLE.ADMIN), NormalUserController.getAllNormalUsers);
 
 export const normalUserRoutes = router;

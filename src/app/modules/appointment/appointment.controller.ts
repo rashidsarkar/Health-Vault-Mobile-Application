@@ -49,9 +49,21 @@ const getProviderAppointments = catchAsync(async (req, res) => {
   });
 });
 
+const getAllAppointments = catchAsync(async (req, res) => {
+  const result = await appointmentServices.getAllAppointments(req.query);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Appointments fetched successfully',
+    data: result,
+  });
+});
+
 const AppointmentController = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
+  getAllAppointments,
 };
 export default AppointmentController;

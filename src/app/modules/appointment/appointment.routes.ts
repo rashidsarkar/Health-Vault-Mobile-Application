@@ -33,4 +33,10 @@ router.get(
   AppointmentController.getProviderAppointments,
 );
 
+router.get(
+  '/all-appointments',
+  auth(USER_ROLE.ADMIN),
+  AppointmentController.getAllAppointments,
+);
+
 export const appointmentRoutes = router;

@@ -144,9 +144,146 @@ const getProviderAppointments = async (
   };
 };
 
+const getAllAppointments = async (query: Record<string, unknown>) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    status: { $in: ['PENDING', 'CONFIRMED'] },
+  };
+
+  const total = await Appointment.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  const appointments = await Appointment.aggregate([
+    { $match: filter },
+
+    // 🔹 Normal User
+    {
+      $lookup: {
+        from: 'normalusers',
+        localField: 'normalUserId',
+        foreignField: '_id',
+        as: 'normalUser',
+      },
+    },
+    { $unwind: { path: '$normalUser', preserveNullAndEmptyArrays: true } },
+
+    // 🔹 User (email, phone) via profileId
+    {
+      $addFields: {
+        normalUserIdStr: { $toString: '$normalUserId' },
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'normalUserIdStr',
+        foreignField: 'profileId',
+        as: 'normalUserUser',
+      },
+    },
+    { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+
+    // 🔹 Service
+    {
+      $lookup: {
+        from: 'services',
+        localField: 'serviceId',
+        foreignField: '_id',
+        as: 'service',
+      },
+    },
+    { $unwind: { path: '$service', preserveNullAndEmptyArrays: true } },
+
+    // 🔹 Provider
+    {
+      $lookup: {
+        from: 'providers',
+        localField: 'providerId',
+        foreignField: '_id',
+        as: 'provider',
+      },
+    },
+
+    { $unwind: { path: '$provider', preserveNullAndEmptyArrays: true } },
+    {
+      $addFields: {
+        providerUserIdStr: { $toString: '$providerId' },
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'providerUserIdStr',
+        foreignField: 'profileId',
+        as: 'providerUserUser',
+      },
+    },
+
+    // 🔹 Provider Type
+    {
+      $lookup: {
+        from: 'providertypes',
+        localField: 'provider.providerTypeId',
+        foreignField: '_id',
+        as: 'providerType',
+      },
+    },
+    { $unwind: { path: '$providerType', preserveNullAndEmptyArrays: true } },
+
+    // 🔹 Projection
+    {
+      $project: {
+        status: 1,
+        appointmentDateTime: 1,
+        reasonForVisit: 1,
+        appointment_images: 1,
+        createdAt: 1,
+        normalUser: {
+          fullName: '$normalUser.fullName',
+          profile_image: '$normalUser.profile_image',
+          email: '$normalUserUser.email',
+          phone: '$normalUserUser.phone',
+        },
+
+        service: {
+          title: '$service.title',
+          price: '$service.price',
+        },
+
+        provider: {
+          address: '$provider.address',
+          providerTypeKey: '$providerType.key',
+          email: '$providerUserUser.email',
+          phone: '$providerUserUser.phone',
+        },
+      },
+    },
+
+    { $sort: { appointmentDateTime: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+  ]);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: appointments,
+  };
+};
+
 const AppointmentServices = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
+  getAllAppointments,
 };
 export default AppointmentServices;

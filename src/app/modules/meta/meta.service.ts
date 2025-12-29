@@ -3,20 +3,21 @@ import NormalUser from '../normalUser/normalUser.model';
 import Provider from '../provider/provider.model';
 
 const getDashboardMetaData = async () => {
-  const [totalNormalUser, totalOrganizer, activeEvent] = await Promise.all([
-    NormalUser.countDocuments(),
-    Provider.countDocuments(),
-    Appointment.countDocuments({
-      status: {
-        $ne: 'CANCELLED',
-      },
-    }),
-  ]);
+  const [totalNormalUser, totalOrganizer, activeAppointment] =
+    await Promise.all([
+      NormalUser.countDocuments(),
+      Provider.countDocuments(),
+      Appointment.countDocuments({
+        status: {
+          $ne: 'CANCELLED',
+        },
+      }),
+    ]);
 
   return {
     totalNormalUser,
     totalOrganizer,
-    activeEvent,
+    activeAppointment,
   };
 };
 
