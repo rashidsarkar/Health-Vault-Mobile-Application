@@ -26,5 +26,17 @@ router.get(
 );
 
 router.get('/', auth(USER_ROLE.ADMIN), NormalUserController.getAllNormalUsers);
+// 🔹 Active Normal Users
+router.get(
+  '/active',
+  auth(USER_ROLE.ADMIN),
+  NormalUserController.getAllActiveNormalUsers,
+);
 
+// 🔹 Blocked Normal Users
+router.get(
+  '/blocked',
+  auth(USER_ROLE.ADMIN),
+  NormalUserController.getAllBlockedNormalUsers,
+);
 export const normalUserRoutes = router;
