@@ -256,6 +256,7 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
         },
 
         provider: {
+          fullName: '$provider.fullName',
           address: '$provider.address',
           providerTypeKey: '$providerType.key',
           email: '$providerUserUser.email',
@@ -280,10 +281,25 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
   };
 };
 
+const deleteAppointment = async (id: string) => {
+  const result = await Appointment.findByIdAndDelete(id);
+  return result;
+};
+const updateStatusAppointment = async (id: string, status: string) => {
+  const result = await Appointment.findByIdAndUpdate(
+    id,
+    { status },
+    { new: true, runValidators: true },
+  );
+  return result;
+};
+
 const AppointmentServices = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
   getAllAppointments,
+  deleteAppointment,
+  updateStatusAppointment,
 };
 export default AppointmentServices;

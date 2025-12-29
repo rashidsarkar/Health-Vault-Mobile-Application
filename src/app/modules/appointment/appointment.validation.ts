@@ -13,5 +13,14 @@ export const createAppointmentData = z.object({
   }),
 });
 
-const AppointmentValidations = { createAppointmentData };
+const updateStatusAppointment = z.object({
+  body: z.object({
+    status: z.enum(['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED']),
+  }),
+});
+
+const AppointmentValidations = {
+  createAppointmentData,
+  updateStatusAppointment,
+};
 export default AppointmentValidations;

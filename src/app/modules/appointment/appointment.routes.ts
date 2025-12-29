@@ -39,4 +39,18 @@ router.get(
   AppointmentController.getAllAppointments,
 );
 
+router.patch(
+  '/update-status/:id',
+  auth(USER_ROLE.ADMIN),
+  validateRequest(AppointmentValidations.updateStatusAppointment),
+
+  AppointmentController.updateStatusAppointment,
+);
+router.delete(
+  '/delete-appointment/:id',
+  auth(USER_ROLE.ADMIN),
+
+  AppointmentController.deleteAppointment,
+);
+
 export const appointmentRoutes = router;
