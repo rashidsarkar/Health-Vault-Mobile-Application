@@ -15,7 +15,7 @@ const loginUser = async (userData: TLoginUser) => {
     isBlocked: false,
   });
   if (!existingUser) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found or blocked');
   }
 
   if (existingUser.isVerifyEmailOTPVerified === false) {
@@ -274,6 +274,24 @@ const resetPassword = async (email: string, password: string) => {
   return { accessToken, refreshToken };
 };
 
+const blockToggle = async (id: string) => {
+  const user = await User.findOne({ _id: id });
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  const isBlocked = !user.isBlocked;
+  const result = await User.findOneAndUpdate(
+    { _id: id },
+    { isBlocked: isBlocked },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return result;
+};
+
 export const AuthServices = {
   loginUser,
   refreshToken,
@@ -283,4 +301,5 @@ export const AuthServices = {
   resetPassword,
   verifyOTP,
   verifyEmailOTP,
+  blockToggle,
 };

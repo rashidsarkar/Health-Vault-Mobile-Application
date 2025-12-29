@@ -105,6 +105,17 @@ const resetPassword = catchAsync(async (req, res) => {
   });
 });
 
+const blockToggle = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await AuthServices.blockToggle(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User blocked or unblocked successfully',
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   loginUser,
   refreshToken,
@@ -114,4 +125,5 @@ export const AuthControllers = {
   resetPassword,
   verifyOTP,
   verifyEmailOTP,
+  blockToggle,
 };

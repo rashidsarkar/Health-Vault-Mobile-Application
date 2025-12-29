@@ -40,6 +40,12 @@ router.post(
   AuthControllers.resetPassword,
 );
 
+router.patch(
+  '/block-toggle/:id',
+  auth(USER_ROLE.ADMIN),
+  AuthControllers.blockToggle,
+);
+
 router.get(
   '/me',
   auth(USER_ROLE.ADMIN, USER_ROLE.NORMALUSER),
