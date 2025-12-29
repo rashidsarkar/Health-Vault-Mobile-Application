@@ -40,6 +40,15 @@ const getSingleNormalUserProfile = catchAsync(async (req, res) => {
 //     data: result,
 //   });
 // });
+// const getAllActiveNormalUsers = catchAsync(async (req, res) => {
+//   const result = await normalUserServices.getAllActiveNormalUsers(req.query);
+//   sendResponse(res, {
+//     statusCode: StatusCodes.OK,
+//     success: true,
+//     message: 'Profiles found successfully',
+//     data: result,
+//   });
+// });
 
 const getAllNormalUsers = catchAsync(async (req, res) => {
   const result = await normalUserServices.getAllNormalUsers(req.query);
