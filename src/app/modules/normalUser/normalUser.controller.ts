@@ -32,7 +32,7 @@ const getSingleNormalUserProfile = catchAsync(async (req, res) => {
   });
 });
 const getAllNormalUsers = catchAsync(async (req, res) => {
-  const result = await normalUserServices.getAllNormalUsers();
+  const result = await normalUserServices.getAllNormalUsers(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
