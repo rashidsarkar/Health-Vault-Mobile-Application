@@ -19,13 +19,8 @@ const router = express.Router();
 //     normalUserController.updateUserProfile
 // );
 
-router.get(
-  '/:id',
-  auth(USER_ROLE.ADMIN),
-  NormalUserController.getSingleNormalUserProfile,
-);
-
 router.get('/', auth(USER_ROLE.ADMIN), NormalUserController.getAllNormalUsers);
+
 // 🔹 Active Normal Users
 router.get(
   '/active',
@@ -33,10 +28,15 @@ router.get(
   NormalUserController.getAllActiveNormalUsers,
 );
 
-// 🔹 Blocked Normal Users
+// // 🔹 Blocked Normal Users
 router.get(
   '/blocked',
   auth(USER_ROLE.ADMIN),
   NormalUserController.getAllBlockedNormalUsers,
+);
+router.get(
+  '/:id',
+  auth(USER_ROLE.ADMIN),
+  NormalUserController.getSingleNormalUserProfile,
 );
 export const normalUserRoutes = router;
