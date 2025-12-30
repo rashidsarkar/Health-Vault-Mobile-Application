@@ -1,5 +1,6 @@
 import Provider from './provider.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import mongoose from 'mongoose';
 
 const getAllProviders = async (query: Record<string, unknown>) => {
   // 1️⃣ PAGINATION SETUP
@@ -133,5 +134,118 @@ const getAllProviders = async (query: Record<string, unknown>) => {
     data: aggregation[0]?.data || [], // Paginated data
   };
 };
-const ProviderServices = { getAllProviders };
+
+const getSingleProvider = async (id: string) => {
+  const providerId = new mongoose.Types.ObjectId(id);
+
+  const result = await Provider.aggregate([
+    // 1️⃣ Match provider by ID
+    {
+      $match: { _id: providerId },
+    },
+
+    // 2️⃣ Provider Type
+    {
+      $lookup: {
+        from: 'providertypes',
+        localField: 'providerTypeId',
+        foreignField: '_id',
+        as: 'providerType',
+      },
+    },
+    {
+      $addFields: {
+        providerType: { $arrayElemAt: ['$providerType', 0] },
+      },
+    },
+
+    // 3️⃣ Services (string → ObjectId)
+    {
+      $lookup: {
+        from: 'services',
+        let: { serviceIds: '$serviceId' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: [
+                  '$_id',
+                  {
+                    $map: {
+                      input: '$$serviceIds',
+                      as: 'id',
+                      in: { $toObjectId: '$$id' },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'services',
+      },
+    },
+
+    // 4️⃣ Availability Days + Slots
+    {
+      $lookup: {
+        from: 'availabilitydays',
+        let: { providerId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$providerId', '$$providerId'] },
+            },
+          },
+          {
+            $lookup: {
+              from: 'availabilityslots',
+              localField: '_id',
+              foreignField: 'availabilityDayId',
+              as: 'availabilitySlots',
+            },
+          },
+        ],
+        as: 'availabilityDays',
+      },
+    },
+
+    // 5️⃣ USER LOOKUP (profileId === provider._id as string)
+    {
+      $lookup: {
+        from: 'users',
+        let: { providerId: { $toString: '$_id' } },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$profileId', '$$providerId'],
+              },
+            },
+          },
+          {
+            $project: {
+              password: 0,
+              verifyEmailOTP: 0,
+              verifyEmailOTPExpire: 0,
+              isResetOTPVerified: 0,
+              __v: 0,
+            },
+          },
+        ],
+        as: 'user',
+      },
+    },
+
+    // 6️⃣ Convert user array → single object
+    {
+      $addFields: {
+        user: { $arrayElemAt: ['$user', 0] },
+      },
+    },
+  ]);
+
+  return result[0] || null;
+};
+const ProviderServices = { getAllProviders, getSingleProvider };
 export default ProviderServices;

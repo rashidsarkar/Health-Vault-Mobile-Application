@@ -8,6 +8,34 @@ const getSingleNormalUserProfile = async (profileId: string) => {
     },
     {
       $lookup: {
+        from: 'users',
+        let: { normalUserId: { $toString: '$_id' } },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$profileId', '$$normalUserId'] },
+                  // { $eq: ['$isBlocked', true] }, // only active users
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              password: 0,
+              verifyEmailOTP: 0,
+              verifyEmailOTPExpire: 0,
+              isResetOTPVerified: 0,
+              __v: 0,
+            },
+          },
+        ],
+        as: 'user',
+      },
+    },
+    {
+      $lookup: {
         from: 'medicaldocuments',
         localField: '_id',
         foreignField: 'normalUserId',
