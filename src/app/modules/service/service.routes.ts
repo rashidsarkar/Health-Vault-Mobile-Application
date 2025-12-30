@@ -31,4 +31,10 @@ router.delete(
   ServiceController.deleteService,
 );
 
+router.get(
+  '/get-service-by-provider-type/:providerType',
+  auth(USER_ROLE.ADMIN),
+  ServiceController.getServiceByProviderType,
+);
+
 export const serviceRoutes = router;

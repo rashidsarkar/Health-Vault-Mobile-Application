@@ -118,11 +118,47 @@ const deleteService = async (id: string, profileId: string, role: string) => {
   );
 };
 
+const getServiceByProviderType = async (
+  providerType: string,
+  query: Record<string, unknown>,
+) => {
+  // 1️⃣ Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // 2️⃣ Filter
+  const filter = { providerType };
+
+  // 3️⃣ Total count
+  const total = await Service.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  // 4️⃣ Get paginated services
+  const services = await Service.find(filter).skip(skip).limit(limit);
+
+  if (services.length === 0) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Services not found');
+  }
+
+  // 5️⃣ Return response
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: services,
+  };
+};
+
 const ServiceServices = {
   createService,
   getAdminServices,
   getMyCreatedServices,
   updatedService,
   deleteService,
+  getServiceByProviderType,
 };
 export default ServiceServices;

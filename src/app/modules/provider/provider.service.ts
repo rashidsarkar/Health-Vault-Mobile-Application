@@ -16,14 +16,22 @@ const getAllProviders = async (query: Record<string, unknown>) => {
 
   // 2️⃣ BUILD INITIAL QUERY
   // Create QueryBuilder instance with Provider model and query parameters
+
   const queryBuilder = new QueryBuilder(Provider.find(), query)
     .search(searchableFields) // Add search functionality for specified fields
     .filter() // Apply filters from query params
     .sort(); // Apply sorting from query params
-
+  if (query.providerTypeId) {
+    queryBuilder.modelQuery.where({
+      providerTypeId: new mongoose.Types.ObjectId(
+        query.providerTypeId as string,
+      ),
+    });
+  }
   // 3️⃣ EXTRACT MONGODB QUERY COMPONENTS
   // Get the filter conditions from the built query
   const filter = queryBuilder.modelQuery.getFilter();
+
   // Get sort options or default to descending creation date
   const sort = queryBuilder.modelQuery.getOptions()?.sort || { createdAt: -1 };
 

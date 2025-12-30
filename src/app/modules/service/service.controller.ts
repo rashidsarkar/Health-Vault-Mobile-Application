@@ -67,11 +67,25 @@ const deleteService = catchAsync(async (req, res) => {
   });
 });
 
+const getServiceByProviderType = catchAsync(async (req, res) => {
+  const result = await ServiceServices.getServiceByProviderType(
+    req.params.providerType,
+    req.query,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Services fetched successfully',
+    data: result,
+  });
+});
+
 const ServiceController = {
   createService,
   getAdminServices,
   getMyCreatedServices,
   updatedService,
   deleteService,
+  getServiceByProviderType,
 };
 export default ServiceController;
