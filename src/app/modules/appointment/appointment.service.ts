@@ -5,6 +5,8 @@ import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 import getAdminIds from '../../utils/findAllDminIds';
+import Service from '../service/service.model';
+import { IService } from '../service/service.interface';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -19,6 +21,16 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
       StatusCodes.BAD_REQUEST,
       'The provider does not offer the specified service',
     );
+  }
+
+  const isDeletedService: IService | null = await Service.findById(
+    payload.serviceId,
+  );
+  if (!isDeletedService) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid service ID');
+  }
+  if (!isDeletedService.isDeleted) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Service is not active');
   }
 
   const existingAppointment = await Appointment.findOne({

@@ -100,6 +100,31 @@ const getAllProviders = async (query: Record<string, unknown>) => {
         as: 'availabilityDays',
       },
     },
+    {
+      $lookup: {
+        from: 'users',
+        let: { providerId: { $toString: '$_id' } },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$profileId', '$$providerId'],
+              },
+            },
+          },
+          {
+            $project: {
+              password: 0,
+              verifyEmailOTP: 0,
+              verifyEmailOTPExpire: 0,
+              isResetOTPVerified: 0,
+              __v: 0,
+            },
+          },
+        ],
+        as: 'user',
+      },
+    },
 
     // Stage 6: Facet for pagination and counting
     {
