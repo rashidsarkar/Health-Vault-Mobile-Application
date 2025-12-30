@@ -1,25 +1,43 @@
-import express from "express";
-import auth from "../../middlewares/auth";
-import { USER_ROLE } from "../user/user.constant";
-import validateRequest from "../../middlewares/validateRequest";
-import articleValidations from "./article.validation";
-import articleController from "./article.controller";
-import { uploadFile } from "../../helper/fileUploader";
+import express from 'express';
+import { uploadFile } from '../../utils/fileUploader';
+import ArticleController from './article.controller';
+import validateRequest from '../../middlewares/validateRequest';
+import ArticleValidations from './article.validation';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.const';
 
 const router = express.Router();
-
-router.patch(
-    "/update-profile",
-    auth(USER_ROLE.user),
-    uploadFile(),
-    (req, res, next) => {
-        if (req.body.data) {
-            req.body = JSON.parse(req.body.data);
-        }
-        next();
-    },
-    validateRequest(articleValidations.updateArticleData),
-    articleController.updateUserProfile
+router.post(
+  '/',
+  auth(USER_ROLE.ADMIN),
+  uploadFile(),
+  (req, _res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(ArticleValidations.createArticleValidationSchema),
+  ArticleController.createArticle,
 );
 
+router.get('/', ArticleController.getAllArticles);
+router.get('/:id', ArticleController.getSingleArticle);
+
+router.patch(
+  '/:id',
+  auth(USER_ROLE.ADMIN),
+  uploadFile(),
+  (req, _res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(ArticleValidations.updateArticleValidationSchema),
+
+  ArticleController.updateArticle,
+);
+
+router.delete('/:id', auth(USER_ROLE.ADMIN), ArticleController.deleteArticle);
 export const articleRoutes = router;
