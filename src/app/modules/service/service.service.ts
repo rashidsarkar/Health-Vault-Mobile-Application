@@ -35,8 +35,8 @@ const createService = async (
 
 const getAdminServices = async (providerType: string) => {
   const services = await Service.find({
-    providerType: providerType,
-    providerId: null,
+    isAdminCreated: true,
+    providerType,
   });
   return services;
 };
