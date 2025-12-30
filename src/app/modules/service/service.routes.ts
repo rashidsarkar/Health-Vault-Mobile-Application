@@ -25,5 +25,10 @@ router.patch(
   auth(...Object.values(USER_ROLE)),
   ServiceController.updatedService,
 );
+router.delete(
+  '/delete-service/:id',
+  auth(...Object.values(USER_ROLE)),
+  ServiceController.deleteService,
+);
 
 export const serviceRoutes = router;

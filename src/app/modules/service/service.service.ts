@@ -72,12 +72,35 @@ const updatedService = async (
   return result;
 };
 
-const deleteService = async (id: string) => {
-  const result = await Service.findByIdAndUpdate(id, {
-    isDeleted: true,
-  });
+const deleteService = async (id: string, profileId: string, role: string) => {
+  if (role === USER_ROLE.ADMIN) {
+    const result = await Service.findByIdAndUpdate(id, {
+      isDeleted: true,
+    });
+    return result;
+  } else if (role === USER_ROLE.PROVIDER) {
+    const result = await Service.findOneAndUpdate(
+      {
+        _id: id,
+        providerId: profileId,
+      },
+      {
+        isDeleted: true,
+      },
+    );
 
-  return result;
+    if (!result) {
+      throw new AppError(
+        StatusCodes.NOT_FOUND,
+        'Service not found or unauthorized',
+      );
+    }
+    return result;
+  }
+  throw new AppError(
+    StatusCodes.UNAUTHORIZED,
+    'Unauthorized to delete this service',
+  );
 };
 
 const ServiceServices = {

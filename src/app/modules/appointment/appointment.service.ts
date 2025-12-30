@@ -13,15 +13,29 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   if (!isProvider) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid provider ID');
   }
-  if (
-    isProvider.serviceId &&
-    !isProvider.serviceId.includes(payload.serviceId)
-  ) {
+
+  const isValidService = await Service.findOne({
+    $or: [{ providerId: payload.providerId }, { isAdminCreated: true }],
+    _id: payload.serviceId,
+  });
+  if (!isValidService) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
       'The provider does not offer the specified service',
     );
   }
+
+  // if (
+  //   payload.serviceId &&
+  //   !isProvider.serviceId.some((id) =>
+  //     id.equals(new mongoose.Types.ObjectId(payload.serviceId)),
+  //   )
+  // ) {
+  //   throw new AppError(
+  //     StatusCodes.BAD_REQUEST,
+  //     'The provider does not offer the specified service',
+  //   );
+  // }
 
   const isDeletedService: IService | null = await Service.findById(
     payload.serviceId,
@@ -29,7 +43,7 @@ const createAppointment = async (payload: IAppointment, profileId: string) => {
   if (!isDeletedService) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid service ID');
   }
-  if (!isDeletedService.isDeleted) {
+  if (isDeletedService.isDeleted) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Service is not active');
   }
 
