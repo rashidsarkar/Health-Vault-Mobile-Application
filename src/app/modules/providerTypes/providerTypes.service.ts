@@ -38,7 +38,19 @@ const updateProviderType = async (
 };
 
 const deleteProviderType = async (id: string) => {
-  const result = await ProviderTypes.findByIdAndDelete(id);
+  const result = await ProviderTypes.findByIdAndUpdate(
+    {
+      _id: id,
+      isActive: true,
+    },
+    {
+      isActive: false,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Provider type not found');
   }

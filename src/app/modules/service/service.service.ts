@@ -13,9 +13,13 @@ const createService = async (
 ) => {
   const isValidProviderType = await ProviderTypes.findOne({
     key: providerType,
+    isActive: true,
   });
   if (!isValidProviderType) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid provider type');
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Invalid provider type or inactive',
+    );
   }
 
   if (myRole === USER_ROLE.ADMIN) {
@@ -74,9 +78,16 @@ const updatedService = async (
 
 const deleteService = async (id: string, profileId: string, role: string) => {
   if (role === USER_ROLE.ADMIN) {
-    const result = await Service.findByIdAndUpdate(id, {
-      isDeleted: true,
-    });
+    const result = await Service.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
     return result;
   } else if (role === USER_ROLE.PROVIDER) {
     const result = await Service.findOneAndUpdate(
@@ -86,6 +97,10 @@ const deleteService = async (id: string, profileId: string, role: string) => {
       },
       {
         isDeleted: true,
+      },
+      {
+        new: true,
+        runValidators: true,
       },
     );
 
