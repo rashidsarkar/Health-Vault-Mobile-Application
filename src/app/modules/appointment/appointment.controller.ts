@@ -60,10 +60,35 @@ const getAllAppointments = catchAsync(async (req, res) => {
   });
 });
 
+const updateStatusAppointment = catchAsync(async (req, res) => {
+  const result = await appointmentServices.updateStatusAppointment(
+    req.params.id,
+    req.body.status,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Appointment status updated successfully',
+    data: result,
+  });
+});
+
+const deleteAppointment = catchAsync(async (req, res) => {
+  const result = await appointmentServices.deleteAppointment(req.params.id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Appointment deleted successfully',
+    data: result,
+  });
+});
+
 const AppointmentController = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
   getAllAppointments,
+  updateStatusAppointment,
+  deleteAppointment,
 };
 export default AppointmentController;

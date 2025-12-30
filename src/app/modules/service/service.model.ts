@@ -25,6 +25,11 @@ const serviceSchema = new Schema<IService>(
       type: Number,
       required: true,
     },
+    isDeleted: {
+      type: Boolean,
+
+      default: false,
+    },
   },
   { timestamps: true },
 );

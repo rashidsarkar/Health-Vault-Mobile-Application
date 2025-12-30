@@ -4,5 +4,6 @@ export interface IService {
   providerType: string;
   title: string;
   type: string;
+  isDeleted?: boolean;
   price: number;
 }

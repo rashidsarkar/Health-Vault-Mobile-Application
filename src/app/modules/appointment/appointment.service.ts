@@ -5,20 +5,46 @@ import Appointment from './appointment.model';
 import Provider from '../provider/provider.model';
 import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 import getAdminIds from '../../utils/findAllDminIds';
+import Service from '../service/service.model';
+import { IService } from '../service/service.interface';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
   if (!isProvider) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid provider ID');
   }
-  if (
-    isProvider.serviceId &&
-    !isProvider.serviceId.includes(payload.serviceId)
-  ) {
+
+  const isValidService = await Service.findOne({
+    $or: [{ providerId: payload.providerId }, { isAdminCreated: true }],
+    _id: payload.serviceId,
+  });
+  if (!isValidService) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
       'The provider does not offer the specified service',
     );
+  }
+
+  // if (
+  //   payload.serviceId &&
+  //   !isProvider.serviceId.some((id) =>
+  //     id.equals(new mongoose.Types.ObjectId(payload.serviceId)),
+  //   )
+  // ) {
+  //   throw new AppError(
+  //     StatusCodes.BAD_REQUEST,
+  //     'The provider does not offer the specified service',
+  //   );
+  // }
+
+  const isDeletedService: IService | null = await Service.findById(
+    payload.serviceId,
+  );
+  if (!isDeletedService) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid service ID');
+  }
+  if (isDeletedService.isDeleted) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Service is not active');
   }
 
   const existingAppointment = await Appointment.findOne({
@@ -256,6 +282,7 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
         },
 
         provider: {
+          fullName: '$provider.fullName',
           address: '$provider.address',
           providerTypeKey: '$providerType.key',
           email: '$providerUserUser.email',
@@ -280,10 +307,25 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
   };
 };
 
+const deleteAppointment = async (id: string) => {
+  const result = await Appointment.findByIdAndDelete(id);
+  return result;
+};
+const updateStatusAppointment = async (id: string, status: string) => {
+  const result = await Appointment.findByIdAndUpdate(
+    id,
+    { status },
+    { new: true, runValidators: true },
+  );
+  return result;
+};
+
 const AppointmentServices = {
   createAppointment,
   getMyAppointments,
   getProviderAppointments,
   getAllAppointments,
+  deleteAppointment,
+  updateStatusAppointment,
 };
 export default AppointmentServices;

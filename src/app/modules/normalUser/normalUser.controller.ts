@@ -31,14 +31,62 @@ const getSingleNormalUserProfile = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// const getAllNormalUsers = catchAsync(async (req, res) => {
+//   const result = await normalUserServices.getAllNormalUsers(req.query);
+//   sendResponse(res, {
+//     statusCode: StatusCodes.OK,
+//     success: true,
+//     message: 'Profiles found successfully',
+//     data: result,
+//   });
+// });
+// const getAllActiveNormalUsers = catchAsync(async (req, res) => {
+//   const result = await normalUserServices.getAllActiveNormalUsers(req.query);
+//   sendResponse(res, {
+//     statusCode: StatusCodes.OK,
+//     success: true,
+//     message: 'Profiles found successfully',
+//     data: result,
+//   });
+// });
+
 const getAllNormalUsers = catchAsync(async (req, res) => {
-  const result = await normalUserServices.getAllNormalUsers();
+  const result = await normalUserServices.getAllNormalUsers(req.query);
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Profiles found successfully',
+    message: 'All normal users fetched successfully',
     data: result,
   });
 });
-const NormalUserController = { getSingleNormalUserProfile, getAllNormalUsers };
+
+const getAllActiveNormalUsers = catchAsync(async (req, res) => {
+  const result = await normalUserServices.getAllActiveNormalUsers(req.query);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Active normal users fetched successfully',
+    data: result,
+  });
+});
+
+const getAllBlockedNormalUsers = catchAsync(async (req, res) => {
+  const result = await normalUserServices.getAllBlockNormalUsers(req.query);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Blocked normal users fetched successfully',
+    data: result,
+  });
+});
+
+const NormalUserController = {
+  getSingleNormalUserProfile,
+  getAllNormalUsers,
+  getAllActiveNormalUsers,
+  getAllBlockedNormalUsers,
+};
 export default NormalUserController;
