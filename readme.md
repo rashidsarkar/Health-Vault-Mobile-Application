@@ -1,30 +1,68 @@
-# Blog-API-Server
+# Health Vault Server
 
-A feature-rich and secure RESTful API for managing blogs and user accounts. Built with Node.js, Express, TypeScript, and MongoDB, this application supports blog creation, updates, deletion, user management, and authorization using JWT.
+A comprehensive RESTful API for a health management mobile application. Built with Node.js, Express, TypeScript, and MongoDB, this server supports user authentication, appointment scheduling, health logging, medical document management, notifications, and various health-related services.
 
 ---
 
 ## Features
 
-- **Blog Management**:
-  - Add, update, delete, and retrieve blogs.
-  - Search functionality for blogs by title or content.
-  - Role-based access control for managing blogs.
-
 - **User Management**:
-  - User registration and login with secure password handling.
-  - Admin functionality to block users.
+
+  - User registration, login, and profile management.
+  - Role-based access control (Admin, Provider, Normal User).
+
+- **Appointment Management**:
+
+  - Schedule, update, and cancel appointments with healthcare providers.
+
+- **Health Logging**:
+
+  - Log and track personal health data.
+
+- **Medical Documents**:
+
+  - Upload and manage medical documents and images.
+
+- **Insurance Management**:
+
+  - Handle insurance information and documents.
+
+- **Provider Management**:
+
+  - Manage healthcare providers, their types, availability, and services.
+
+- **Notifications**:
+
+  - Real-time notifications for appointments, reminders, and updates.
+
+- **Articles**:
+
+  - Publish and manage health-related articles.
+
+- **Favorites**:
+
+  - Save favorite providers or services.
+
+- **Reminders**:
+
+  - Set and manage health reminders.
+
+- **Meta Data**:
+
+  - Retrieve application metadata.
 
 - **Authorization**:
+
   - JWT-based authentication for secure access.
-  - Role-based authorization to control access to sensitive operations.
+  - Role-based authorization for different user types.
 
 - **Error Handling**:
+
   - Centralized error handling for validation and server errors.
   - Detailed error messages for debugging.
 
-- **Query Builder**:
-  - Dynamic query handling for search, filter, and sort operations.
+- **File Uploads**:
+  - Support for uploading images and documents.
 
 ---
 
@@ -35,6 +73,8 @@ A feature-rich and secure RESTful API for managing blogs and user accounts. Buil
 - **Validation**: Zod
 - **Language**: TypeScript
 - **Authentication**: JSON Web Tokens (JWT)
+- **File Upload**: Multer
+- **Real-time**: Socket.io
 - **Environment Variables**: Dotenv
 
 ---
@@ -52,27 +92,31 @@ Ensure you have the following installed:
 ## Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/rashidsarkar/Blog-API-Server.git
-cd Blog-API-Server
+git clone https://github.com/rashidsarkar/Health-Vault-Mobile-Application.git
+cd Health-Vault-Mobile-Application
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 3. Configure Environment Variables
+
 Create a `.env` file in the root directory and add the following:
 
 ```env
 PORT=5000
-DATABASE_URL=DB_URL
+DATABASE_URL=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 NODE_ENV=development
 ```
 
 ### 4. Start the Server
+
 Run the following command to start the application:
 
 ```bash
@@ -81,25 +125,85 @@ npm run start:dev
 
 The server will start on `http://localhost:5000`.
 
-
 ---
 
 ## API Endpoints
 
 ### Auth Endpoints
-- **POST** `/api/auth/register` - Register a new user.
-- **POST** `/api/auth/login` - Login to get access tokens.
 
-### Blog Endpoints
-- **POST** `/api/blogs` - Create a new blog.
-- **GET** `/api/blogs` - Retrieve all blogs with search, filter, and sort.
-- **GET** `/api/blogs/:id` - Retrieve a specific blog by ID.
-- **PATCH** `/api/blogs/:id` - Update an existing blog.
-- **DELETE** `/api/blogs/:id` - Delete a blog by ID.
+- **POST** `/api/v1/auth/register` - Register a new user.
+- **POST** `/api/v1/auth/login` - Login to get access tokens.
 
-### Admin Endpoints
-- **PATCH** `/api/admin/users/:userId/block` - Block a user (Admin only).
-- **DELETE** `/api/admin/blogs/:id` - Delete any blog (Admin only).
+### User Endpoints
+
+- **GET** `/api/v1/user` - Retrieve user profile.
+- **PATCH** `/api/v1/user` - Update user profile.
+
+### Appointment Endpoints
+
+- **POST** `/api/v1/appointment` - Create a new appointment.
+- **GET** `/api/v1/appointment` - Retrieve user's appointments.
+- **PATCH** `/api/v1/appointment/:id` - Update an appointment.
+- **DELETE** `/api/v1/appointment/:id` - Cancel an appointment.
+
+### Provider Endpoints
+
+- **GET** `/api/v1/provider` - Retrieve providers.
+- **POST** `/api/v1/provider` - Add a new provider (Admin/Provider).
+- **PATCH** `/api/v1/provider/:id` - Update provider info.
+
+### Availability Endpoints
+
+- **GET** `/api/v1/availability-day` - Get availability days.
+- **GET** `/api/v1/availability-slot` - Get availability slots.
+
+### Health Log Endpoints
+
+- **POST** `/api/v1/healthLog` - Add a health log entry.
+- **GET** `/api/v1/healthLog` - Retrieve health logs.
+
+### Medical Document Endpoints
+
+- **POST** `/api/v1/medicalDocument` - Upload a medical document.
+- **GET** `/api/v1/medicalDocument` - Retrieve user's documents.
+
+### Insurance Endpoints
+
+- **POST** `/api/v1/insurance` - Add insurance info.
+- **GET** `/api/v1/insurance` - Retrieve insurance details.
+
+### Notification Endpoints
+
+- **GET** `/api/v1/notification` - Get notifications.
+
+### Article Endpoints
+
+- **POST** `/api/v1/article` - Create an article (Admin/Provider).
+- **GET** `/api/v1/article` - Retrieve articles.
+- **PATCH** `/api/v1/article/:id` - Update an article.
+- **DELETE** `/api/v1/article/:id` - Delete an article.
+
+### Reminder Endpoints
+
+- **POST** `/api/v1/reminder` - Set a reminder.
+- **GET** `/api/v1/reminder` - Get reminders.
+
+### Service Endpoints
+
+- **GET** `/api/v1/service` - Retrieve services.
+
+### Favorite Endpoints
+
+- **POST** `/api/v1/favorite` - Add to favorites.
+- **GET** `/api/v1/favorite` - Get favorites.
+
+### Meta Endpoints
+
+- **GET** `/api/v1/meta` - Get application metadata.
+
+### Admin Endpoints (Admin only)
+
+- Various management endpoints for web content, users, etc.
 
 ---
 
@@ -123,8 +227,8 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ## Author
 
-**MD Rashid Sarkar**  
-- [GitHub](https://github.com/rashidsarkar)  
-- [Portfolio](https://fabulous-meringue-442652.netlify.app)  
-- [Email](mailto:rashidsarkar558@gmail.com)
+**MD Rashid Sarkar**
 
+- [GitHub](https://github.com/rashidsarkar)
+- [Portfolio](https://fabulous-meringue-442652.netlify.app)
+- [Email](mailto:rashidsarkar558@gmail.com)
