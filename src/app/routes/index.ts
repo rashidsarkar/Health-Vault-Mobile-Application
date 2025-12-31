@@ -16,6 +16,7 @@ import { healthLogRoutes } from '../modules/healthLog/healthLog.routes';
 import { notificationRoutes } from '../modules/notification/notification.routes';
 import { metaRoutes } from '../modules/meta/meta.routes';
 import { normalUserRoutes } from '../modules/normalUser/normalUser.routes';
+import { articleRoutes } from '../modules/article/article.routes';
 
 const router = Router();
 
@@ -83,6 +84,10 @@ const moduleRoutes = [
   {
     path: '/normal-User',
     route: normalUserRoutes,
+  },
+  {
+    path: '/article',
+    route: articleRoutes,
   },
 ];
 
