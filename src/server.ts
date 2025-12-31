@@ -4,6 +4,7 @@ import config from './app/config';
 import app from './app';
 import seedAdmin from './app/db/seedAdmin';
 import { initializeSocket } from './app/socket/socket';
+import startReminderScheduler from './app/modules/reminder/reminder.scheduler';
 let server: Server;
 
 async function main() {
@@ -17,6 +18,7 @@ async function main() {
     });
     seedAdmin();
     initializeSocket(server);
+    startReminderScheduler();
   } catch (error) {
     console.error('Error connecting to the database:', error);
   }

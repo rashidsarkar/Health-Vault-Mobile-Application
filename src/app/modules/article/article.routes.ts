@@ -5,6 +5,8 @@ import validateRequest from '../../middlewares/validateRequest';
 import ArticleValidations from './article.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.const';
+import { User } from '../user/user.model';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 router.post(

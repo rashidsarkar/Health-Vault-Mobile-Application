@@ -31,6 +31,7 @@ const reminderSchema = new Schema<IReminder>(
     assignedTo: { type: String, required: true },
 
     isActive: { type: Boolean, default: true },
+    lastNotifiedAt: { type: Date },
   },
   { timestamps: true },
 );
