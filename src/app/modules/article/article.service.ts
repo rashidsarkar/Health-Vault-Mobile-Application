@@ -9,8 +9,35 @@ const createArticle = async (payload: IArticle) => {
   return result;
 };
 
-const getAllArticles = async () => {
-  return await Article.find().sort({ createdAt: -1 });
+const getAllArticles = async (query: Record<string, unknown>) => {
+  // 1️⃣ Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // 2️⃣ Optional filter (extend later if needed)
+  const filter = {};
+
+  // 3️⃣ Total count
+  const total = await Article.countDocuments(filter);
+  const totalPage = Math.ceil(total / limit);
+
+  // 4️⃣ Paginated data
+  const articles = await Article.find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  // 5️⃣ Final response
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage,
+    },
+    data: articles,
+  };
 };
 
 const getSingleArticle = async (id: string) => {

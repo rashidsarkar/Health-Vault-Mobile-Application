@@ -21,7 +21,7 @@ const createArticle = catchAsync(async (req, res) => {
 });
 
 const getAllArticles = catchAsync(async (req, res) => {
-  const result = await ArticleServices.getAllArticles();
+  const result = await ArticleServices.getAllArticles(req.query);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

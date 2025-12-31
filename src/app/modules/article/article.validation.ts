@@ -14,7 +14,7 @@ const createArticleValidationSchema = z.object({
       })
       .min(1, 'Details cannot be empty'),
 
-    article_image: z.string(),
+    article_image: z.string().optional(),
   }),
 });
 
