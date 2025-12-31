@@ -17,6 +17,7 @@ import { notificationRoutes } from '../modules/notification/notification.routes'
 import { metaRoutes } from '../modules/meta/meta.routes';
 import { normalUserRoutes } from '../modules/normalUser/normalUser.routes';
 import { articleRoutes } from '../modules/article/article.routes';
+import { ManageRoutes } from '../modules/manage-web/manage.routes';
 
 const router = Router();
 
@@ -88,6 +89,10 @@ const moduleRoutes = [
   {
     path: '/article',
     route: articleRoutes,
+  },
+  {
+    path: '/manage-Web',
+    route: ManageRoutes,
   },
 ];
 
