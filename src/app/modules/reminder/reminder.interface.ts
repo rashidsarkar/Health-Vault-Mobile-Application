@@ -19,4 +19,5 @@ export interface IReminder {
   instructions: string; // enum if needed
   assignedTo: string;
   isActive: boolean;
+  lastNotifiedAt?: Date;
 }
