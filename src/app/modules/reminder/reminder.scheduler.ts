@@ -28,7 +28,7 @@ const startReminderScheduler = () => {
       }
 
       const user = await User.findOne({
-        profileId: '693fe713259dc7ca1fee9b01',
+        profileId: reminder.normalUserId.toString(),
       }).select('_id');
 
       if (!user) {
