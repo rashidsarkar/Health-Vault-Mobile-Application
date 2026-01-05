@@ -20,4 +20,8 @@ export interface IReminder {
   assignedTo: string;
   isActive: boolean;
   lastNotifiedAt?: Date;
+  scheduleMeta?: {
+    dayOfWeek?: number; // 0 (Sun) – 6 (Sat) → Weekly
+    dayOfMonth?: number; // 1 – 31 → Monthly
+  };
 }

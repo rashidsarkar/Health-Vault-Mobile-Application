@@ -4,68 +4,81 @@ import dayjs from 'dayjs';
 import { sendSinglePushNotification } from '../../helper/sendPushNotification';
 import Reminder from './reminder.model';
 import { User } from '../user/user.model';
+import { ReminderSchedule } from './reminder.interface';
 
 const startReminderScheduler = () => {
-  // runs every minute
+  // ⏰ runs every minute
   cron.schedule('* * * * *', async () => {
-    const now = dayjs();
-    const currentTime = now.format('HH:mm');
-    console.log(
-      `[${now.format()}] Cron triggered. Checking reminders for ${currentTime}`,
-    );
+    try {
+      const now = dayjs();
+      const currentTime = now.format('HH:mm');
 
-    const reminders = await Reminder.find({
-      isActive: true,
-      startDate: { $lte: now.toDate() },
-      endDate: { $gte: now.toDate() },
-      times: { $in: [currentTime] },
-    });
+      const todayDay = now.day(); // 0 = Sunday ... 6 = Saturday
+      const todayDate = now.date(); // 1–31
 
-    console.log(`[${now.format()}] Found ${reminders.length} reminder(s)`);
+      console.log(`[${now.format()}] Checking reminders for ${currentTime}`);
 
-    for (const reminder of reminders) {
-      // 🚫 prevent duplicate push
-      if (
-        reminder.lastNotifiedAt &&
-        dayjs(reminder.lastNotifiedAt).isSame(now, 'minute')
-      ) {
-        console.log(
-          `[${now.format()}] Reminder ${reminder._id} already notified this minute`,
+      const reminders = await Reminder.find({
+        isActive: true,
+        startDate: { $lte: now.toDate() },
+        endDate: { $gte: now.toDate() },
+        times: { $in: [currentTime] },
+        $or: [
+          // ✅ Daily
+          { schedule: ReminderSchedule.Daily },
+
+          // ✅ Weekly
+          {
+            schedule: ReminderSchedule.Weekly,
+            'scheduleMeta.dayOfWeek': todayDay,
+          },
+
+          // ✅ Monthly
+          {
+            schedule: ReminderSchedule.Monthly,
+            'scheduleMeta.dayOfMonth': todayDate,
+          },
+        ],
+      });
+
+      console.log(`[${now.format()}] Found ${reminders.length} reminder(s)`);
+
+      for (const reminder of reminders) {
+        // 🚫 prevent duplicate push (same minute)
+        if (
+          reminder.lastNotifiedAt &&
+          dayjs(reminder.lastNotifiedAt).isSame(now, 'minute')
+        ) {
+          continue;
+        }
+
+        const user = await User.findOne({
+          profileId: reminder.normalUserId.toString(),
+        }).select('_id');
+
+        if (!user) continue;
+
+        // 📲 Send Push Notification
+        await sendSinglePushNotification(
+          user._id.toString(),
+          'Medicine Reminder',
+          `Time to take ${reminder.pillName} (${reminder.dosage}mg). ${
+            reminder.instructions ?? ''
+          }`,
+          {
+            reminderId: reminder._id.toString(),
+            pillName: reminder.pillName,
+            dosage: reminder.dosage,
+            schedule: reminder.schedule,
+          },
         );
-        continue;
+
+        // ✅ Mark as notified
+        reminder.lastNotifiedAt = now.toDate();
+        await reminder.save();
       }
-
-      const user = await User.findOne({
-        profileId: reminder.normalUserId.toString(),
-      }).select('_id');
-
-      if (!user) {
-        console.log(
-          `[${now.format()}] User not found for profileId: ${reminder.normalUserId}`,
-        );
-        continue;
-      }
-
-      console.log(
-        `[${now.format()}] Sending notification for reminder ${reminder._id} to user ${user._id}`,
-      );
-
-      // 📲 PUSH NOTIFICATION ONLY
-      await sendSinglePushNotification(
-        user._id.toString(),
-        'Medicine Reminder',
-        `Time to take ${reminder.pillName} (${reminder.dosage}mg). ${reminder.instructions ?? ''}`,
-        {
-          reminderId: reminder._id.toString(),
-          pillName: reminder.pillName,
-          dosage: reminder.dosage,
-        },
-      );
-
-      // ✅ mark as sent
-      reminder.lastNotifiedAt = now.toDate();
-      await reminder.save();
-      console.log(`[${now.format()}] Reminder ${reminder._id} marked as sent`);
+    } catch (error) {
+      console.error('Reminder cron error:', error);
     }
   });
 };
