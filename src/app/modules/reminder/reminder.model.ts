@@ -32,6 +32,10 @@ const reminderSchema = new Schema<IReminder>(
 
     isActive: { type: Boolean, default: true },
     lastNotifiedAt: { type: Date },
+    scheduleMeta: {
+      dayOfWeek: { type: Number }, // 0 = Sunday, 1 = Monday ... (Weekly)
+      dayOfMonth: { type: Number }, // 1–31 (Monthly)
+    },
   },
   { timestamps: true },
 );
