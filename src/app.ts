@@ -10,7 +10,19 @@ const app: Application = express();
 
 // parsers
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'http://10.10.20.48:3000',
+      'http://localhost:5454',
+      'http://10.10.20.3:5454',
+    ],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow the header you are sending
+  }),
+);
 app.use(cookieParser());
 
 app.use('/api/v1/', router);
