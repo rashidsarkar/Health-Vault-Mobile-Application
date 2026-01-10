@@ -46,10 +46,6 @@ router.patch(
   AuthControllers.blockToggle,
 );
 
-router.get(
-  '/me',
-  auth(USER_ROLE.ADMIN, USER_ROLE.NORMALUSER),
-  AuthControllers.getMe,
-);
+router.get('/admin/me', auth(USER_ROLE.ADMIN), AuthControllers.getMe);
 
 export const AuthRoutes = router;
