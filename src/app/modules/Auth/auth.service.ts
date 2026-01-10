@@ -8,6 +8,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import { generateToken, verifyToken } from '../../utils/generateToken';
 import { emailSender } from '../../utils/emailSender';
+import Admin from '../admin/admin.model';
+import { USER_ROLE } from '../user/user.const';
 
 const loginUser = async (userData: TLoginUser) => {
   const existingUser = await User.findOne({
@@ -98,17 +100,54 @@ const refreshToken = async (token: string) => {
 // const logout = async (email: string) => {
 //   await User.findOneAndUpdate({ email }, { refreshToken: null });
 // };
-const getMe = async (reqEmail: string, tokenEmail: string) => {
-  if (reqEmail !== tokenEmail) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'You are not Authorized ');
+const getMeAdmin = async (profileId: string) => {
+  const result = await User.aggregate([
+    // 1️⃣ Match admin user
+    {
+      $match: {
+        profileId,
+        role: USER_ROLE.ADMIN,
+      },
+    },
+
+    // 2️⃣ Join admin profile
+    {
+      $lookup: {
+        from: 'admins',
+        localField: '_id',
+        foreignField: 'user',
+        as: 'adminProfile',
+      },
+    },
+
+    // 3️⃣ Flatten profile
+    {
+      $unwind: {
+        path: '$adminProfile',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    // 4️⃣ Final response shape
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        email: 1,
+        role: 1,
+        profileId: 1,
+        fullName: 1,
+        phone: 1,
+        profile_image: '$adminProfile.profile_image',
+      },
+    },
+  ]);
+
+  if (!result.length) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Admin user not found');
   }
-  const user = await User.findOne({ email: reqEmail }).select(
-    '_id name email role isBlocked',
-  );
-  if (!user) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-  }
-  return user;
+
+  return result[0];
 };
 
 const changePassword = async (
@@ -295,7 +334,7 @@ const blockToggle = async (id: string) => {
 export const AuthServices = {
   loginUser,
   refreshToken,
-  getMe,
+  getMeAdmin,
   changePassword,
   forgotPassword,
   resetPassword,

@@ -10,6 +10,7 @@ import { emailSender } from '../../utils/emailSender';
 import Provider from '../provider/provider.model';
 import { createProviderSchema } from '../provider/provider.validation';
 import unlinkFile from '../../utils/unLinkFile';
+import Admin from '../admin/admin.model';
 
 const generateVerifyCode = (): number => {
   return Math.floor(100000 + Math.random() * 900000);
@@ -37,7 +38,7 @@ const createUserIntoDB = async (userData: TUser) => {
     );
 
     // Send verification email (not password reset email)
-    await emailSender(
+    emailSender(
       userData.email,
       `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -123,7 +124,7 @@ const createUserIntoDB = async (userData: TUser) => {
     const result = await User.findById(user._id).select(
       '_id name email role profileId isBlocked isVerifyEmailOTPVerified profile_image',
     );
-    await emailSender(
+    emailSender(
       userData.email,
       `
     <h2>Email Verification OTP</h2>
@@ -488,6 +489,35 @@ const updateMyProfileIntoDB = async (
             phone: data.phone,
           },
           { session: session },
+        );
+      }
+
+      await session.commitTransaction();
+      return updatedProfile;
+    } else if (role === USER_ROLE.ADMIN) {
+      const existingProfile = await Admin.findById(profileId).session(session);
+      if (!existingProfile) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Profile not found');
+      }
+
+      if (existingProfile.profile_image && data.profile_image) {
+        unlinkFile(existingProfile.profile_image);
+      }
+
+      const updatedProfile = await Admin.findByIdAndUpdate(profileId, data, {
+        new: true,
+        runValidators: true,
+        session,
+      });
+
+      if (existingProfile.user) {
+        await User.findByIdAndUpdate(
+          existingProfile.user.toString(),
+          {
+            fullName: data.fullName,
+            phone: data.phone,
+          },
+          { session },
         );
       }
 

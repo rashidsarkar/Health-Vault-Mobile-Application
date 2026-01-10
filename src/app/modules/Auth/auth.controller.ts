@@ -30,10 +30,7 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 const getMe = catchAsync(async (req, res) => {
-  const result = await AuthServices.getMe(
-    req.query.email as string,
-    req.user?.email as string,
-  );
+  const result = await AuthServices.getMeAdmin(req.user.profileId);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
