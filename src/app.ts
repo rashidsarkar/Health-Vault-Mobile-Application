@@ -18,6 +18,7 @@ app.use(
       'http://10.10.20.48:3000',
       'http://localhost:5454',
       'http://10.10.20.3:5454',
+      'http://192.168.0.109:5454',
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow the header you are sending

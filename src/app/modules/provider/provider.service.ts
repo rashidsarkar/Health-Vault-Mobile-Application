@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 
 const getAllProviders = async (query: Record<string, unknown>) => {
   // 1️⃣ PAGINATION SETUP
+  // http://localhost:3333/api/v1/provider/all-providers?providerTypeId=null&status=active&page=1&limit=10
+  // if providerTypeId is null then show all provider
+  // status active ..is come from User.isBlocked
   // Extract page number from query or default to 1
   const page = Number(query.page) || 1;
   // Extract limit (items per page) from query or default to 10

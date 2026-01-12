@@ -31,7 +31,7 @@ const getProviderChartData = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Organizer chart data retrieved successfully',
+    message: 'Provider chart data retrieved successfully',
     data: result,
   });
 });
