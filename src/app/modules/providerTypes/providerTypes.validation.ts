@@ -13,6 +13,5 @@ const updateProviderType = z.object({
     isActive: z.boolean().optional(),
   }),
 });
-
 const ProviderTypesValidations = { createProviderType, updateProviderType };
 export default ProviderTypesValidations;

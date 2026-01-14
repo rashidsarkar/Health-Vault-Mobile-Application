@@ -12,7 +12,7 @@ const createProviderType = async (payload: IProviderTypes) => {
 };
 
 const getAllProviderTypes = async () => {
-  return await ProviderTypes.find();
+  return await ProviderTypes.find({ isActive: true });
 };
 
 const getSingleProviderType = async (id: string) => {

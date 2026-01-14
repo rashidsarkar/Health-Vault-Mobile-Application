@@ -14,6 +14,8 @@ const providerTypesSchema = new Schema<IProviderTypes>(
       type: String,
       required: true, // Doctor, Pharmacy
       trim: true,
+      unique: true,
+      uppercase: true, // DOCTOR, PHARMACY
     },
 
     isActive: {
