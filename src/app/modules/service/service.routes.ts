@@ -13,7 +13,7 @@ router.post(
   validateRequest(ServiceValidations.createServiceData),
   ServiceController.createService,
 );
-router.get('/admin-service', ServiceController.getAdminServices);
+router.get('/admin-service/:providerType', ServiceController.getAdminServices);
 router.get(
   '/my-created-service',
   auth(...Object.values(USER_ROLE)),
@@ -22,7 +22,7 @@ router.get(
 
 router.patch(
   '/update-service/:id',
-  auth(...Object.values(USER_ROLE)),
+  auth(USER_ROLE.ADMIN, USER_ROLE.PROVIDER),
   ServiceController.updatedService,
 );
 router.delete(

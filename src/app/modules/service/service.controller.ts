@@ -19,7 +19,9 @@ const createService = catchAsync(async (req, res) => {
 });
 
 const getAdminServices = catchAsync(async (req, res) => {
-  const result = await ServiceServices.getAdminServices(req.body.providerType);
+  const result = await ServiceServices.getAdminServices(
+    req.params.providerType,
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -45,6 +47,7 @@ const updatedService = catchAsync(async (req, res) => {
     req.params.id,
     req?.user?.profileId,
     req.body,
+    req.user.role,
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,

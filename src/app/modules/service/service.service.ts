@@ -40,6 +40,7 @@ const createService = async (
 const getAdminServices = async (providerType: string) => {
   const services = await Service.find({
     isAdminCreated: true,
+    isDeleted: false,
     providerType,
   });
   return services;
@@ -57,8 +58,16 @@ const updatedService = async (
   id: string,
   profileId: string,
   payload: IService,
+  role: string,
 ) => {
   const { title, price } = payload;
+  if (role === USER_ROLE.ADMIN) {
+    const result = await Service.findByIdAndUpdate(id, payload);
+    if (!result) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'Service not found');
+    }
+    return result;
+  }
   const result = await Service.findOneAndUpdate(
     { providerId: profileId, _id: id },
     {
