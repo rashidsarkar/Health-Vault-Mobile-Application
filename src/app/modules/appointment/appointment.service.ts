@@ -274,6 +274,7 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
           profile_image: '$normalUser.profile_image',
           email: '$normalUserUser.email',
           phone: '$normalUserUser.phone',
+          _id: '$normalUser._id',
         },
 
         service: {
@@ -287,6 +288,7 @@ const getAllAppointments = async (query: Record<string, unknown>) => {
           providerTypeKey: '$providerType.key',
           email: '$providerUserUser.email',
           phone: '$providerUserUser.phone',
+          _id: '$provider._id',
         },
       },
     },
