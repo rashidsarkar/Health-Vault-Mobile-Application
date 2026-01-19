@@ -54,7 +54,11 @@ const loginUser = async (userData: TLoginUser) => {
     config.jwt_refresh_expires_in,
   );
 
-  return { accessToken, refreshToken };
+  // const userData={
+
+  // }
+
+  return { accessToken, refreshToken, jwtPayload };
 };
 const refreshToken = async (token: string) => {
   const decodedData = verifyToken(token, config.jwt_refresh_secret as string);
