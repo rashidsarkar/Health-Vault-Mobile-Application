@@ -33,7 +33,7 @@ router.delete(
 
 router.get(
   '/get-service-by-provider-type/:providerType',
-  auth(USER_ROLE.ADMIN),
+  // auth(USER_ROLE.ADMIN),
   ServiceController.getServiceByProviderType,
 );
 
