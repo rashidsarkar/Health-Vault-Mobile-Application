@@ -196,7 +196,9 @@ const createNotification = async (
         message,
         count: count.unseenCount,
         _id: notification._id,
-        createdAt: notification.createdAt,
+        // createdAt: notification.createdAt,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        createdAt: (notification as any).createdAt,
         data,
       });
     }
