@@ -322,6 +322,41 @@ const getUserFromDb = async () => {
   return user;
 };
 
+const getMeNormalUser = async (profileId: string) => {
+  const result = await User.aggregate([
+    {
+      $match: { profileId: profileId },
+    },
+    {
+      $addFields: {
+        profileObjectId: { $toObjectId: '$profileId' },
+      },
+    },
+    {
+      $lookup: {
+        from: 'normalusers',
+        localField: 'profileObjectId',
+        foreignField: '_id',
+        as: 'normalUserDetails',
+      },
+    },
+    {
+      $project: {
+        password: 0,
+        verifyEmailOTP: 0,
+        verifyEmailOTPExpire: 0,
+        passwordChangedAt: 0,
+        resetOTP: 0,
+        resetOTPExpire: 0,
+        isResetOTPVerified: 0,
+        isVerifyEmailOTPVerified: 0,
+        playerIds: 0,
+      },
+    },
+  ]);
+  return result;
+};
+
 const getMeFromDb = async (email: string) => {
   const result = await User.aggregate([
     // 1️⃣ Match user
@@ -539,4 +574,5 @@ export const UserServices = {
   getMeFromDb,
   getUserFromDb,
   updateMyProfileIntoDB,
+  getMeNormalUser,
 };

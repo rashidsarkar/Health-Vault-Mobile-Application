@@ -68,9 +68,22 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+const getMeNormalUser = catchAsync(async (req, res) => {
+  const result = await UserServices.getMeNormalUser(
+    req.user?.profileId as string,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Normal User found',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getMe,
   getUsers,
   updateMyProfile,
+  getMeNormalUser,
 };
