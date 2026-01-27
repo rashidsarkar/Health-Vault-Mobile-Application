@@ -50,7 +50,7 @@ router.delete(
 );
 
 router.get(
-  '/',
+  '/:forWhom',
   auth(USER_ROLE.NORMALUSER),
   InsuranceController.getMyInsurances,
 );

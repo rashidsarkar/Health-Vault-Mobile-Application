@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { IInsurance } from './insurance.interface';
+import { IInsurance, TForWhom } from './insurance.interface';
 import Insurance from './insurance.model';
 import { Types } from 'mongoose';
 import AppError from '../../errors/AppError';
@@ -55,8 +55,15 @@ const deleteInsurance = async (id: string, profileId: string) => {
   }
 };
 
-const getMyInsurances = async (profileId: string) => {
-  const result = await Insurance.find({ normalUserId: profileId });
+const getMyInsurances = async (profileId: string, forWhom: TForWhom) => {
+  const result = await Insurance.find({ normalUserId: profileId, forWhom });
+  if (!result || result.length === 0) {
+    throw new AppError(
+      StatusCodes.NOT_FOUND,
+      'No insurances found or fixed SELF FAMILY',
+    );
+  }
+
   return result;
 };
 

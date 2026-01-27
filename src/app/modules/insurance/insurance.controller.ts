@@ -67,7 +67,10 @@ const deleteInsurance = catchAsync(async (req, res) => {
 });
 
 const getMyInsurances = catchAsync(async (req, res) => {
-  const result = await InsuranceServices.getMyInsurances(req.user.profileId);
+  const result = await InsuranceServices.getMyInsurances(
+    req.user.profileId,
+    req.params.forWhom as string,
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
