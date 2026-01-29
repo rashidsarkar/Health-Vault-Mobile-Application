@@ -64,6 +64,10 @@ const updateUserMedicalDocument = catchAsync(async (req, res) => {
   });
 });
 
+const getMyMedicalDocument= catchAsync(async (req,res)=>{
+  
+})
+
 const MedicalDocumentController = {
   createUserMedicalDocument,
   updateUserMedicalDocument,
