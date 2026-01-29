@@ -35,4 +35,6 @@ router.patch(
   medicalDocumentController.updateUserMedicalDocument,
 );
 
+router.get('/getMy-document', auth(USER_ROLE.NORMALUSER), medicalDocumentController.getMyMedicalDocument)
+
 export const medicalDocumentRoutes = router;
