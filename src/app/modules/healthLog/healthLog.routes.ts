@@ -17,7 +17,7 @@ router.post(
 );
 
 router.get(
-  '/',
+  '/:forWhom',
   auth(USER_ROLE.NORMALUSER),
   HealthLogController.getMyHealthLogs,
 );

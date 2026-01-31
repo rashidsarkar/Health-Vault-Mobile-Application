@@ -20,7 +20,10 @@ const createHealthLog = catchAsync(async (req, res) => {
 });
 
 const getMyHealthLogs = catchAsync(async (req, res) => {
-  const result = await HealthLogServices.getMyHealthLogs(req.user.profileId);
+  const result = await HealthLogServices.getMyHealthLogs(
+    req.user.profileId,
+    req.params.forWhom,
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

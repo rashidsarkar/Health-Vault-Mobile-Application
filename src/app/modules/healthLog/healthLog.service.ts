@@ -1,5 +1,5 @@
 import HealthLog from './healthLog.model';
-import { IHealthLog } from './healthLog.interface';
+import { IHealthLog, TForWhom } from './healthLog.interface';
 import AppError from '../../errors/AppError';
 import { StatusCodes } from 'http-status-codes';
 
@@ -9,8 +9,8 @@ const createHealthLog = async (profileId: string, payload: IHealthLog) => {
   return await HealthLog.create(payload);
 };
 
-const getMyHealthLogs = async (profileId: string) => {
-  return await HealthLog.find({ normalUserId: profileId }).sort({
+const getMyHealthLogs = async (profileId: string, forWhom: TForWhom) => {
+  return await HealthLog.find({ normalUserId: profileId, forWhom }).sort({
     createdAt: -1,
   });
 };
