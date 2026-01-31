@@ -64,8 +64,21 @@ const updateUserMedicalDocument = catchAsync(async (req, res) => {
   });
 });
 
+const getMyMedicalDocument= catchAsync(async (req,res)=>{
+  const result = await medicalDocumentServices.getMyMedicalDocument(req.user.profileId)
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Get my medical document successfully',
+    data: result,
+  });
+
+})
+
 const MedicalDocumentController = {
   createUserMedicalDocument,
   updateUserMedicalDocument,
+  getMyMedicalDocument
 };
 export default MedicalDocumentController;

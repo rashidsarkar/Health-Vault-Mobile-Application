@@ -127,8 +127,24 @@ const updateUserMedicalDocument = async (
   return result;
 };
 
+
+const getMyMedicalDocument = async (profileId: string) => {
+  const result = await MedicalDocument.findOne({
+    normalUserId: profileId,
+  }).lean();
+
+  if (!result) {
+    throw new Error('Medical document not found');
+  }
+
+  return result;
+};
+
+
+
 const MedicalDocumentServices = {
   createUserMedicalDocument,
   updateUserMedicalDocument,
+  getMyMedicalDocument
 };
 export default MedicalDocumentServices;
