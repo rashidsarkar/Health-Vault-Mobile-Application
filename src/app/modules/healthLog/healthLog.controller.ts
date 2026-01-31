@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import HealthLogServices from './healthLog.service';
+import { TForWhom } from './healthLog.interface';
 
 const createHealthLog = catchAsync(async (req, res) => {
   const result = await HealthLogServices.createHealthLog(
@@ -22,7 +23,7 @@ const createHealthLog = catchAsync(async (req, res) => {
 const getMyHealthLogs = catchAsync(async (req, res) => {
   const result = await HealthLogServices.getMyHealthLogs(
     req.user.profileId,
-    req.params.forWhom,
+    req.params.forWhom as TForWhom,
   );
 
   sendResponse(res, {

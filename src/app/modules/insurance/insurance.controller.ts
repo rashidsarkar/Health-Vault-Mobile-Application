@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import InsuranceServices from './insurance.service';
+import { TForWhom } from './insurance.interface';
 
 const createInsurance = catchAsync(async (req, res) => {
   const { files } = req;
@@ -69,7 +70,7 @@ const deleteInsurance = catchAsync(async (req, res) => {
 const getMyInsurances = catchAsync(async (req, res) => {
   const result = await InsuranceServices.getMyInsurances(
     req.user.profileId,
-    req.params.forWhom as string,
+    req.params.forWhom as TForWhom,
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
