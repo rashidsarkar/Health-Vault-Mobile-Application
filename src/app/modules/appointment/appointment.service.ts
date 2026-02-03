@@ -174,8 +174,6 @@ const getProviderByIdAppointments = async (
   providerId: string,
   appointmentId: string,
 ) => {
-  console.log(providerId, appointmentId);
-  // 📄 Paginated data
   const appointments = await Appointment.findOne({
     _id: new Types.ObjectId(appointmentId),
     providerId: new Types.ObjectId(providerId),
@@ -192,8 +190,6 @@ const getProviderByIdAppointments = async (
       path: 'providerId',
       select: 'address',
     });
-
-  // const appointments = await Appointment.findById(appointmentId);
 
   return appointments;
 };
