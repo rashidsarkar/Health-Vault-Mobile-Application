@@ -7,6 +7,7 @@ import { sendRealTimeNotification } from '../../utils/sendRealTimeNotification';
 import getAdminIds from '../../utils/findAllDminIds';
 import Service from '../service/service.model';
 import { IService } from '../service/service.interface';
+import { Types } from 'mongoose';
 
 const createAppointment = async (payload: IAppointment, profileId: string) => {
   const isProvider = await Provider.findById(payload.providerId);
@@ -169,6 +170,33 @@ const getProviderAppointments = async (
     data: appointments,
   };
 };
+const getProviderByIdAppointments = async (
+  providerId: string,
+  appointmentId: string,
+) => {
+  console.log(providerId, appointmentId);
+  // 📄 Paginated data
+  const appointments = await Appointment.findOne({
+    _id: new Types.ObjectId(appointmentId),
+    providerId: new Types.ObjectId(providerId),
+  })
+    .populate({
+      path: 'normalUserId',
+      select: 'fullName profile_image',
+    })
+    .populate({
+      path: 'serviceId',
+      select: 'title price',
+    })
+    .populate({
+      path: 'providerId',
+      select: 'address',
+    });
+
+  // const appointments = await Appointment.findById(appointmentId);
+
+  return appointments;
+};
 
 const getAllAppointments = async (query: Record<string, unknown>) => {
   const page = Number(query.page) || 1;
@@ -329,5 +357,6 @@ const AppointmentServices = {
   getAllAppointments,
   deleteAppointment,
   updateStatusAppointment,
+  getProviderByIdAppointments,
 };
 export default AppointmentServices;

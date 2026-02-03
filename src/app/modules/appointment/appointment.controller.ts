@@ -48,6 +48,19 @@ const getProviderAppointments = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getProviderByIdAppointments = catchAsync(async (req, res) => {
+  const result = await appointmentServices.getProviderByIdAppointments(
+    req.user.profileId,
+    req.params.id,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Appointments fetched successfully',
+    data: result,
+  });
+});
 
 const getAllAppointments = catchAsync(async (req, res) => {
   const result = await appointmentServices.getAllAppointments(req.query);
@@ -90,5 +103,6 @@ const AppointmentController = {
   getAllAppointments,
   updateStatusAppointment,
   deleteAppointment,
+  getProviderByIdAppointments,
 };
 export default AppointmentController;

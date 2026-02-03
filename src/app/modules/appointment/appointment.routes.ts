@@ -32,6 +32,11 @@ router.get(
   auth(USER_ROLE.PROVIDER),
   AppointmentController.getProviderAppointments,
 );
+router.get(
+  '/provider-appointments/:id',
+  auth(USER_ROLE.PROVIDER),
+  AppointmentController.getProviderByIdAppointments,
+);
 
 router.get(
   '/all-appointments',
