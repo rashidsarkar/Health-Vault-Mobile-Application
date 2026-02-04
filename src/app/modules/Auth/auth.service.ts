@@ -10,6 +10,8 @@ import { generateToken, verifyToken } from '../../utils/generateToken';
 import { emailSender } from '../../utils/emailSender';
 import Admin from '../admin/admin.model';
 import { USER_ROLE } from '../user/user.const';
+import Provider from '../provider/provider.model';
+import NormalUser from '../normalUser/normalUser.model';
 
 const loginUser = async (userData: TLoginUser) => {
   const existingUser = await User.findOne({
@@ -57,8 +59,17 @@ const loginUser = async (userData: TLoginUser) => {
   // const userData={
 
   // }
+  let profileData = undefined;
 
-  return { accessToken, refreshToken, jwtPayload };
+  if (existingUser.role === USER_ROLE.PROVIDER) {
+    profileData = await Provider.findById(existingUser.profileId)
+      .populate('providerTypeId')
+      .populate('serviceId');
+  } else if (existingUser.role === USER_ROLE.NORMALUSER) {
+    profileData = await NormalUser.findById(existingUser.profileId);
+  }
+
+  return { accessToken, refreshToken, jwtPayload, profileData };
 };
 const refreshToken = async (token: string) => {
   const decodedData = verifyToken(token, config.jwt_refresh_secret as string);
