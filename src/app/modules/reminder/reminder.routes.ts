@@ -24,5 +24,11 @@ router.patch(
   validateRequest(reminderValidations.updateReminderSchema),
   reminderController.updateReminder,
 );
+router.patch(
+  '/delete-reminder/:id',
+  auth(USER_ROLE.NORMALUSER),
+  // validateRequest(reminderValidations.updateReminderSchema),
+  reminderController.deleteReminder,
+);
 
 export const reminderRoutes = router;

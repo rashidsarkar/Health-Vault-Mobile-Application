@@ -37,5 +37,26 @@ const updateReminder = async (
   });
   return result;
 };
-const ReminderServices = { createReminder, getMyReminders, updateReminder };
+
+const deleteReminder = async (reminderId: string, userId: string) => {
+  const updatedReminder = await Reminder.findById(reminderId);
+  if (!updatedReminder) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Reminder not found');
+  }
+  if (updatedReminder.normalUserId.toString() !== userId) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      'You are not authorized to update this reminder',
+    );
+  }
+  const result = await Reminder.findByIdAndDelete(reminderId);
+  return result;
+};
+
+const ReminderServices = {
+  createReminder,
+  getMyReminders,
+  updateReminder,
+  deleteReminder,
+};
 export default ReminderServices;

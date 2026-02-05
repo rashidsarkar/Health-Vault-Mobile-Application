@@ -38,6 +38,24 @@ const updateReminder = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteReminder = catchAsync(async (req, res) => {
+  const reminderId = req.params.id;
+  const result = await reminderServices.deleteReminder(
+    reminderId,
+    req.user.profileId,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Reminder Delete successfully',
+    data: result,
+  });
+});
 
-const ReminderController = { createReminder, getMyReminders, updateReminder };
+const ReminderController = {
+  createReminder,
+  getMyReminders,
+  updateReminder,
+  deleteReminder,
+};
 export default ReminderController;
