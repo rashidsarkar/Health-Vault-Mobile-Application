@@ -24,7 +24,7 @@ router.patch(
   validateRequest(reminderValidations.updateReminderSchema),
   reminderController.updateReminder,
 );
-router.patch(
+router.delete(
   '/delete-reminder/:id',
   auth(USER_ROLE.NORMALUSER),
   // validateRequest(reminderValidations.updateReminderSchema),
