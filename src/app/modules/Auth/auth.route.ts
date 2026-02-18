@@ -47,5 +47,10 @@ router.patch(
 );
 
 router.get('/admin/me', auth(USER_ROLE.ADMIN), AuthControllers.getMe);
+router.delete(
+  '/delete-me',
+  auth(USER_ROLE.ADMIN, USER_ROLE.NORMALUSER, USER_ROLE.PROVIDER),
+  AuthControllers.deleteMe,
+);
 
 export const AuthRoutes = router;

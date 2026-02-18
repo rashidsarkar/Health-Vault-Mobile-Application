@@ -113,6 +113,17 @@ const blockToggle = catchAsync(async (req, res) => {
   });
 });
 
+const deleteMe = catchAsync(async (req, res) => {
+  const user = req.user;
+  const result = await AuthServices.deleteMe(user);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User account deleted successfully',
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   loginUser,
   refreshToken,
@@ -123,4 +134,5 @@ export const AuthControllers = {
   verifyOTP,
   verifyEmailOTP,
   blockToggle,
+  deleteMe,
 };

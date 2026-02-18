@@ -12,6 +12,8 @@ import Admin from '../admin/admin.model';
 import { USER_ROLE } from '../user/user.const';
 import Provider from '../provider/provider.model';
 import NormalUser from '../normalUser/normalUser.model';
+import mongoose from 'mongoose';
+import unlinkFile from '../../utils/unLinkFile';
 
 const loginUser = async (userData: TLoginUser) => {
   const existingUser = await User.findOne({
@@ -346,6 +348,60 @@ const blockToggle = async (id: string) => {
   return result;
 };
 
+const deleteMe = async (user: any) => {
+  const { id, email, profileId, role } = user;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // delete role specific profile and unlink files
+    if (role === USER_ROLE.PROVIDER) {
+      const existingProfile =
+        await Provider.findById(profileId).session(session);
+      if (existingProfile) {
+        if (existingProfile.profile_image)
+          unlinkFile(existingProfile.profile_image);
+        if (existingProfile.identification_images)
+          unlinkFile(existingProfile.identification_images);
+        await Provider.findByIdAndDelete(profileId).session(session);
+      } else {
+        await Provider.findOneAndDelete({ user: id }).session(session);
+      }
+    } else if (role === USER_ROLE.NORMALUSER) {
+      const existingProfile =
+        await NormalUser.findById(profileId).session(session);
+      if (existingProfile) {
+        if (existingProfile.profile_image)
+          unlinkFile(existingProfile.profile_image);
+        await NormalUser.findByIdAndDelete(profileId).session(session);
+      } else {
+        await NormalUser.findOneAndDelete({ user: id }).session(session);
+      }
+    } else if (role === USER_ROLE.ADMIN) {
+      const existingProfile = await Admin.findById(profileId).session(session);
+      if (existingProfile) {
+        if (existingProfile.profile_image)
+          unlinkFile(existingProfile.profile_image);
+        await Admin.findByIdAndDelete(profileId).session(session);
+      } else {
+        await Admin.findOneAndDelete({ user: id }).session(session);
+      }
+    }
+
+    // finally delete user
+    await User.findByIdAndDelete(id).session(session);
+
+    await session.commitTransaction();
+    return { message: 'User and related profile deleted successfully' };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
+
 export const AuthServices = {
   loginUser,
   refreshToken,
@@ -356,4 +412,5 @@ export const AuthServices = {
   verifyOTP,
   verifyEmailOTP,
   blockToggle,
+  deleteMe,
 };
