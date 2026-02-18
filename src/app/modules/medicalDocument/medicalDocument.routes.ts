@@ -8,8 +8,34 @@ import { uploadFile } from '../../utils/fileUploader';
 
 const router = express.Router();
 
-router.post(
-  '/create-document',
+// router.post(
+//   '/create-document',
+//   auth(USER_ROLE.NORMALUSER),
+//   uploadFile(),
+//   (req, res, next) => {
+//     if (req.body.data) {
+//       req.body = JSON.parse(req.body.data);
+//     }
+//     next();
+//   },
+//   validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
+//   medicalDocumentController.createUserMedicalDocument,
+// );
+// router.patch(
+//   '/update-document',
+//   auth(USER_ROLE.NORMALUSER),
+//   uploadFile(),
+//   (req, res, next) => {
+//     if (req.body.data) {
+//       req.body = JSON.parse(req.body.data);
+//     }
+//     next();
+//   },
+//   validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
+//   medicalDocumentController.updateUserMedicalDocument,
+// );
+router.put(
+  '/medical-document',
   auth(USER_ROLE.NORMALUSER),
   uploadFile(),
   (req, res, next) => {
@@ -19,22 +45,13 @@ router.post(
     next();
   },
   validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
-  medicalDocumentController.createUserMedicalDocument,
-);
-router.patch(
-  '/update-document',
-  auth(USER_ROLE.NORMALUSER),
-  uploadFile(),
-  (req, res, next) => {
-    if (req.body.data) {
-      req.body = JSON.parse(req.body.data);
-    }
-    next();
-  },
-  validateRequest(medicalDocumentValidations.medicalDocumentValidationSchema),
-  medicalDocumentController.updateUserMedicalDocument,
+  medicalDocumentController.upsertUserMedicalDocument,
 );
 
-router.get('/getMy-document', auth(USER_ROLE.NORMALUSER), medicalDocumentController.getMyMedicalDocument)
+router.get(
+  '/getMy-document',
+  auth(USER_ROLE.NORMALUSER),
+  medicalDocumentController.getMyMedicalDocument,
+);
 
 export const medicalDocumentRoutes = router;
