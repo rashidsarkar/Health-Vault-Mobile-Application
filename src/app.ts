@@ -19,6 +19,7 @@ app.use(
       'http://localhost:5454',
       'http://10.10.20.3:5454',
       'http://192.168.0.104:5454',
+      'https://majestic-kashata-bbfec0.netlify.app',
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow the header you are sending
